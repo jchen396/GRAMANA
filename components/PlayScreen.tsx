@@ -14,52 +14,208 @@ const PlayScreen = () => {
 	const [isWin, setIsWin] = useState(false);
 
 	useEffect(() => {
-		let rightCharacters =
-			AVAILABLE_LETTERS.length -
-			1 -
-			AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]);
-		let leftCharacters = AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]);
-		//check word going right
-		let rightCheck = false;
-		let leftCheck = false;
-		if (rightCharacters === 0) rightCheck = true;
-		for (let i = 1; i < rightCharacters + 1; i++) {
-			//check right side of AVAILABLE_LETTERS array
+		// CHECK LEFT TO RIGHT
+		const checkLeftRight = () => {
+			let rightCharacters =
+				AVAILABLE_LETTERS.length -
+				1 -
+				AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]);
+			let leftCharacters = AVAILABLE_LETTERS.indexOf(
+				tiles[selectedIndex]
+			);
+			let rightCheck = false;
+			let leftCheck = false;
 			if (rightCharacters === 0) rightCheck = true;
-			if (
-				AVAILABLE_LETTERS[
-					AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) + i
-				] === tiles[selectedIndex + i] ||
-				AVAILABLE_LETTERS[
-					AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) + i
-				] === tiles[selectedIndex + i]
-			) {
-				if (i === rightCharacters) {
-					rightCheck = true;
-				}
-				continue;
-			} else break;
-			rightCheck = true;
-		}
-		if (leftCharacters === 0) leftCheck = true;
-		for (let i = 1; i < leftCharacters + 1; i++) {
-			//check left side of AVAILABLE_LETTERS array
+			for (let i = 1; i < rightCharacters + 1; i++) {
+				//check right side of AVAILABLE_LETTERS array
+				if (rightCharacters === 0) rightCheck = true;
+				if (
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) + i
+					] === tiles[selectedIndex + i] ||
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) + i
+					] === tiles[selectedIndex + i]
+				) {
+					if (i === rightCharacters) {
+						rightCheck = true;
+					}
+					continue;
+				} else break;
+				rightCheck = true;
+			}
 			if (leftCharacters === 0) leftCheck = true;
-			if (
-				AVAILABLE_LETTERS[
-					AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) - i
-				] === tiles[selectedIndex - i] ||
-				AVAILABLE_LETTERS[
-					AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) - i
-				] === tiles[selectedIndex - i]
-			) {
-				if (i === leftCharacters || leftCharacters === 0) {
-					leftCheck = true;
-				}
-				continue;
-			} else break;
-		}
-		setIsWin(rightCheck && leftCheck ? true : false);
+			for (let i = 1; i < leftCharacters + 1; i++) {
+				//check left side of AVAILABLE_LETTERS array
+				if (leftCharacters === 0) leftCheck = true;
+				if (
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) - i
+					] === tiles[selectedIndex - i] ||
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) - i
+					] === tiles[selectedIndex - i]
+				) {
+					if (i === leftCharacters || leftCharacters === 0) {
+						leftCheck = true;
+					}
+					continue;
+				} else break;
+			}
+			setIsWin(rightCheck && leftCheck ? true : false);
+		};
+		//CHECK RIGHT TO LEFT
+		const checkRightLeft = () => {
+			let rightCharacters =
+				AVAILABLE_LETTERS.length -
+				1 -
+				AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]);
+			let leftCharacters = AVAILABLE_LETTERS.indexOf(
+				tiles[selectedIndex]
+			);
+			let rightCheck = false;
+			let leftCheck = false;
+			if (rightCharacters === 0) rightCheck = true;
+			for (let i = 1; i < rightCharacters + 1; i++) {
+				//check right side of AVAILABLE_LETTERS array
+				if (rightCharacters === 0) rightCheck = true;
+				if (
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) + i
+					] === tiles[selectedIndex - i] ||
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) + i
+					] === tiles[selectedIndex - i]
+				) {
+					if (i === rightCharacters) {
+						rightCheck = true;
+					}
+					continue;
+				} else break;
+				rightCheck = true;
+			}
+			if (leftCharacters === 0) leftCheck = true;
+			for (let i = 1; i < leftCharacters + 1; i++) {
+				//check left side of AVAILABLE_LETTERS array
+				if (leftCharacters === 0) leftCheck = true;
+				if (
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) - i
+					] === tiles[selectedIndex + i] ||
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) - i
+					] === tiles[selectedIndex + i]
+				) {
+					if (i === leftCharacters || leftCharacters === 0) {
+						leftCheck = true;
+					}
+					continue;
+				} else break;
+			}
+			setIsWin(rightCheck && leftCheck ? true : false);
+		};
+		const checkUpDown = () => {
+			let rightCharacters =
+				AVAILABLE_LETTERS.length -
+				1 -
+				AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]);
+			let leftCharacters = AVAILABLE_LETTERS.indexOf(
+				tiles[selectedIndex]
+			);
+			let rightCheck = false;
+			let leftCheck = false;
+			if (rightCharacters === 0) rightCheck = true;
+			for (let i = 1; i < rightCharacters + 1; i++) {
+				//check right side of AVAILABLE_LETTERS array
+				if (rightCharacters === 0) rightCheck = true;
+				if (
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) + i
+					] === tiles[selectedIndex + i * 12] ||
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) + i
+					] === tiles[selectedIndex + i * 12]
+				) {
+					if (i === rightCharacters) {
+						rightCheck = true;
+					}
+					continue;
+				} else break;
+				rightCheck = true;
+			}
+			if (leftCharacters === 0) leftCheck = true;
+			for (let i = 1; i < leftCharacters + 1; i++) {
+				//check left side of AVAILABLE_LETTERS array
+				if (leftCharacters === 0) leftCheck = true;
+				if (
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) - i
+					] === tiles[selectedIndex - i * 12] ||
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) - i
+					] === tiles[selectedIndex - i * 12]
+				) {
+					if (i === leftCharacters || leftCharacters === 0) {
+						leftCheck = true;
+					}
+					continue;
+				} else break;
+			}
+			setIsWin(rightCheck && leftCheck ? true : false);
+		};
+		const checkDownUp = () => {
+			let rightCharacters =
+				AVAILABLE_LETTERS.length -
+				1 -
+				AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]);
+			let leftCharacters = AVAILABLE_LETTERS.indexOf(
+				tiles[selectedIndex]
+			);
+			let rightCheck = false;
+			let leftCheck = false;
+			if (rightCharacters === 0) rightCheck = true;
+			for (let i = 1; i < rightCharacters + 1; i++) {
+				//check right side of AVAILABLE_LETTERS array
+				if (rightCharacters === 0) rightCheck = true;
+				if (
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) + i
+					] === tiles[selectedIndex - i * 12] ||
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) + i
+					] === tiles[selectedIndex - i * 12]
+				) {
+					if (i === rightCharacters) {
+						rightCheck = true;
+					}
+					continue;
+				} else break;
+				rightCheck = true;
+			}
+			if (leftCharacters === 0) leftCheck = true;
+			for (let i = 1; i < leftCharacters + 1; i++) {
+				//check left side of AVAILABLE_LETTERS array
+				if (leftCharacters === 0) leftCheck = true;
+				if (
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) - i
+					] === tiles[selectedIndex + i * 12] ||
+					AVAILABLE_LETTERS[
+						AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) - i
+					] === tiles[selectedIndex + i * 12]
+				) {
+					if (i === leftCharacters || leftCharacters === 0) {
+						leftCheck = true;
+					}
+					continue;
+				} else break;
+			}
+			setIsWin(rightCheck && leftCheck ? true : false);
+		};
+		checkLeftRight();
+		checkRightLeft();
+		checkUpDown();
+		checkDownUp();
 		//check game status
 		if (isWin) {
 			console.log("You won!");
@@ -80,6 +236,7 @@ const PlayScreen = () => {
 				inputChar,
 				...tiles.slice(key + 1, tiles.length),
 			]);
+			window.removeEventListener("keydown", inputTile);
 		};
 		if (tiles[key] === "") {
 			window.addEventListener("keydown", inputTile);
