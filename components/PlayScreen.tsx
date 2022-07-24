@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import { CLIENT_RENEG_WINDOW } from "tls";
 
 const AVAILABLE_LETTERS = "PURPLE".split("");
 
@@ -14,8 +13,8 @@ const PlayScreen = () => {
 	const [selectedIndex, setSelectedIndex] = useState(-1);
 	const [isWin, setIsWin] = useState(false);
 	const [playerColor, setPlayerColor] = useState("red");
-	const ref = useRef<HTMLDivElement>(null);
-
+	const [selectedDiv, setSelectedDiv] = useState<HTMLDivElement | null>(null);
+	const refs = useRef<any>([...new Array(144)].map(() => React.createRef()));
 	useEffect(() => {
 		// CHECK LEFT TO RIGHT
 		const checkLeftRight = () => {
@@ -475,6 +474,11 @@ const PlayScreen = () => {
 
 	//This function will be invoked whenever a tile is clicked
 	const selectTile = (key: number, divEvent: any) => {
+		if (selectedDiv !== null) {
+			selectedDiv.classList.remove(`bg-${playerColor}-600`);
+		}
+		setSelectedDiv(divEvent.target);
+
 		// This function will read the keyboard and input character if it is part of "PURPLE"
 		const inputTile = (keydownEvent: any) => {
 			let inputChar;
@@ -486,13 +490,9 @@ const PlayScreen = () => {
 					inputChar,
 					...tiles.slice(key + 1, tiles.length),
 				]);
-				divEvent.target.classList.add(`bg-${playerColor}-600`);
-				console.log(divEvent.target);
 				if (playerColor === "red") {
-					console.log("change to blue");
 					setPlayerColor("blue");
 				} else {
-					console.log("change to red");
 					setPlayerColor("red");
 				}
 			}
@@ -500,7 +500,7 @@ const PlayScreen = () => {
 		};
 		if (tiles[key] === "") {
 			window.addEventListener("keydown", inputTile);
-			console.log(divEvent.target.classList);
+			divEvent.target.classList.add(`bg-${playerColor}-600`);
 		}
 	};
 
@@ -508,8 +508,8 @@ const PlayScreen = () => {
 		<div className="grid grid-cols-12 gap-2 s:w-full md:w-1/2 lg:w-1/3 h-1/2">
 			{tiles.map((value, key) => (
 				<div
-					ref={ref}
-					className={`text-slate-100 s:w-6 s:h-6 w-8 h-8 border-2 border-red-200 hover:border-blue-200 flex justify-center items-center`}
+					ref={refs.current[key]}
+					className={`text-slate-100 rounded s:w-6 s:h-6 w-8 h-8 border-2 border-red-200 hover:border-blue-200 flex justify-center items-center`}
 					onClick={(event) => selectTile(key, event)}
 					key={key}
 				>
