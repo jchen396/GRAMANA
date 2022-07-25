@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const AVAILABLE_LETTERS = "PURPLE".split("");
 
@@ -14,7 +14,6 @@ const PlayScreen = () => {
 	const [isWin, setIsWin] = useState(false);
 	const [playerColor, setPlayerColor] = useState("red");
 	const [selectedDiv, setSelectedDiv] = useState<HTMLDivElement | null>(null);
-	const refs = useRef<any>([...new Array(144)].map(() => React.createRef()));
 	useEffect(() => {
 		// CHECK LEFT TO RIGHT
 		const checkLeftRight = () => {
@@ -468,9 +467,9 @@ const PlayScreen = () => {
 		checkDownRight();
 		//check game status
 		if (isWin) {
-			console.log("You won!");
+			console.log(`${playerColor} lost the game!`);
 		}
-	}, [selectedIndex, tiles, isWin]);
+	}, [selectedIndex, tiles, isWin, playerColor]);
 
 	//This function will be invoked whenever a tile is clicked
 	const selectTile = (key: number, divEvent: any) => {
@@ -508,7 +507,6 @@ const PlayScreen = () => {
 		<div className="grid grid-cols-12 gap-2 s:w-full md:w-1/2 lg:w-1/3 h-1/2">
 			{tiles.map((value, key) => (
 				<div
-					ref={refs.current[key]}
 					className={`text-slate-100 rounded s:w-6 s:h-6 w-8 h-8 border-2 border-red-200 hover:border-blue-200 flex justify-center items-center`}
 					onClick={(event) => selectTile(key, event)}
 					key={key}
