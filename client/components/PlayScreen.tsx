@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { Socket } from "socket.io";
+import io from "socket.io-client";
 
 const AVAILABLE_LETTERS = "PURPLE".split("");
-
+const SERVER = "http://localhost:3000";
+const socket = io(SERVER);
 const PlayScreen = () => {
 	let initialArr: string[] = [];
 
@@ -14,6 +17,21 @@ const PlayScreen = () => {
 	const [isWin, setIsWin] = useState(false);
 	const [playerColor, setPlayerColor] = useState("red");
 	const [selectedDiv, setSelectedDiv] = useState<HTMLDivElement | null>(null);
+	useEffect(() => {
+		socket.on("connect", () => console.log(socket.id));
+		socket.on("play", (key, inputChar) => {
+			setSelectedIndex(key);
+			setTiles([
+				...tiles.slice(0, key),
+				inputChar,
+				...tiles.slice(key + 1, tiles.length),
+			]);
+		});
+		return () => {
+			socket.off("connect");
+			socket.off("play");
+		};
+	}, []);
 	useEffect(() => {
 		// CHECK LEFT TO RIGHT
 		const checkLeftRight = () => {
@@ -490,6 +508,7 @@ const PlayScreen = () => {
 					inputChar,
 					...tiles.slice(key + 1, tiles.length),
 				]);
+				socket.emit("play", key, inputChar);
 				if (playerColor === "red") {
 					setPlayerColor("blue");
 				} else {

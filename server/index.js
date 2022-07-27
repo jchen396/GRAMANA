@@ -13,16 +13,14 @@ const io = socketIo(server, {
 //in case server and client run on different urls
 io.on("connection", (socket) => {
 	console.log("client connected:", socket.id);
-
-	socket.join("clock-room");
-
 	socket.on("disconnect", (reason) => {
-		console.log(reason);
+		console.log(`${reason} for ${socket.id}`);
+	});
+	socket.on("play", (key, inputChar) => {
+		console.log(`server received ${inputChar} at ${key} `);
+		socket.broadcast.emit("play", key, inputChar);
 	});
 });
-setInterval(() => {
-	io.to("clock-room").emit("time", new Date());
-}, 1000);
 server.listen(PORT, (err) => {
 	if (err) console.log(err);
 	console.log("Server running on Port", PORT);
