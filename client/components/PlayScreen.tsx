@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Socket } from "socket.io";
+import e from "express";
+import React, { useRef, useEffect, useState, createRef } from "react";
 import io from "socket.io-client";
 
 const AVAILABLE_LETTERS = "PURPLE".split("");
-const SERVER = "http://localhost:3000";
+const SERVER = "http://localhost:8080";
 const socket = io(SERVER);
 const PlayScreen = () => {
 	let initialArr: string[] = [];
@@ -17,15 +17,22 @@ const PlayScreen = () => {
 	const [isWin, setIsWin] = useState(false);
 	const [playerColor, setPlayerColor] = useState("red");
 	const [selectedDiv, setSelectedDiv] = useState<HTMLDivElement | null>(null);
+	const [turn, setTurn] = useState(0);
+	const refs = useRef<any>([...new Array(144)].map(() => React.createRef()));
 	useEffect(() => {
 		socket.on("connect", () => console.log(socket.id));
-		socket.on("play", (key, inputChar) => {
-			setSelectedIndex(key);
-			setTiles([
-				...tiles.slice(0, key),
-				inputChar,
-				...tiles.slice(key + 1, tiles.length),
-			]);
+		socket.on("play", (index, grid, color) => {
+			console.log(`client received ${index}, $${grid}, ${color}`);
+			setSelectedIndex(index);
+			setTiles(grid);
+			if (index !== -1) {
+				refs.current[index].current.classList.add(`bg-${color}-600`);
+			}
+			if (playerColor === "red") {
+				setPlayerColor("blue");
+			} else {
+				setPlayerColor("red");
+			}
 		});
 		return () => {
 			socket.off("connect");
@@ -488,45 +495,55 @@ const PlayScreen = () => {
 			console.log(`${playerColor} lost the game!`);
 		}
 	}, [selectedIndex, tiles, isWin, playerColor]);
-
+	//Emitting socket.io event after every valid input && pass new Color
+	useEffect(() => {
+		let prevColor;
+		if (playerColor === "red") {
+			prevColor = "blue";
+		} else {
+			prevColor = "red";
+		}
+		socket.emit("play", selectedIndex, tiles, prevColor);
+	}, [turn]);
 	//This function will be invoked whenever a tile is clicked
 	const selectTile = (key: number, divEvent: any) => {
-		if (selectedDiv !== null) {
-			selectedDiv.classList.remove(`bg-${playerColor}-600`);
-		}
-		setSelectedDiv(divEvent.target);
-		divEvent.target.classList.add(`bg-${playerColor}-600`);
-
 		// This function will read the keyboard and input character if it is part of "PURPLE"
-		const inputTile = (keydownEvent: any) => {
+		const inputTile = (keyPressEvent: any) => {
 			let inputChar;
-			if (AVAILABLE_LETTERS.includes(keydownEvent.key.toUpperCase())) {
-				inputChar = keydownEvent.key.toUpperCase();
+			if (AVAILABLE_LETTERS.includes(keyPressEvent.key.toUpperCase())) {
+				keyPressEvent.preventDefault();
+				inputChar = keyPressEvent.key.toUpperCase();
 				setSelectedIndex(key);
 				setTiles([
 					...tiles.slice(0, key),
 					inputChar,
 					...tiles.slice(key + 1, tiles.length),
 				]);
-				socket.emit("play", key, inputChar);
+				setTurn((prev) => prev + 1);
 				if (playerColor === "red") {
 					setPlayerColor("blue");
 				} else {
 					setPlayerColor("red");
 				}
 			}
-			window.removeEventListener("keydown", inputTile);
+			window.removeEventListener("keypress", inputTile);
 		};
+		if (selectedDiv !== null) {
+			selectedDiv.classList.remove(`bg-${playerColor}-600`);
+		}
+		setSelectedDiv(divEvent.target);
+		divEvent.target.classList.add(`bg-${playerColor}-600`);
+		console.log(divEvent.target);
 		if (tiles[key] === "") {
-			window.addEventListener("keydown", inputTile);
+			window.addEventListener("keypress", inputTile);
 		}
 	};
-
 	return (
 		<div className="grid grid-cols-12 gap-2 s:w-full md:w-1/2 lg:w-1/3 h-1/2">
 			{tiles.map((value, key) => (
 				<div
-					className={`text-slate-100 rounded s:w-6 s:h-6 w-8 h-8 border-2 border-red-200 hover:border-blue-200 flex justify-center items-center `}
+					ref={refs.current[key]}
+					className={`text-slate-900 rounded s:w-6 s:h-6 w-8 h-8 border-2 border-red-200 hover:border-blue-200 flex justify-center items-center `}
 					onClick={(event) => selectTile(key, event)}
 					key={key}
 				>
