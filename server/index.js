@@ -19,6 +19,9 @@ io.on("connection", (socket) => {
 	socket.on("play", (key, tiles, playerColor) => {
 		socket.broadcast.emit("play", key, tiles, playerColor);
 	});
+	socket.on("message", message => {
+		socket.broadcast.emit("message" , message);
+	})
 });
 server.listen(PORT, (err) => {
 	if (err) console.log(err);
