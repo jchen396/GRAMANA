@@ -1,10 +1,6 @@
-import e from "express";
 import React, { useRef, useEffect, useState, createRef } from "react";
-import io from "socket.io-client";
-
+import socket from "./Socket";
 const AVAILABLE_LETTERS = "PURPLE".split("");
-const SERVER = "http://localhost:8080";
-const socket = io(SERVER);
 const PlayScreen = () => {
 	let initialArr: string[] = [];
 
@@ -22,13 +18,11 @@ const PlayScreen = () => {
 	useEffect(() => {
 		socket.on("connect", () => console.log(socket.id));
 		socket.on("play", (index, grid, color) => {
-			console.log(`client received ${index}, $${grid}, ${color}`);
-			setSelectedIndex(index);
 			setTiles(grid);
-			if (index !== -1) {
-				refs.current[index].current.classList.add(`bg-${color}-600`);
+			if (index !== -1 && index !== selectedIndex) {
+				refs.current[index].current.classList.add(`bg-${color}-400`);
 			}
-			if (playerColor === "red") {
+			if (color === "red") {
 				setPlayerColor("blue");
 			} else {
 				setPlayerColor("red");
@@ -511,7 +505,6 @@ const PlayScreen = () => {
 		const inputTile = (keyPressEvent: any) => {
 			let inputChar;
 			if (AVAILABLE_LETTERS.includes(keyPressEvent.key.toUpperCase())) {
-				keyPressEvent.preventDefault();
 				inputChar = keyPressEvent.key.toUpperCase();
 				setSelectedIndex(key);
 				setTiles([
@@ -520,30 +513,32 @@ const PlayScreen = () => {
 					...tiles.slice(key + 1, tiles.length),
 				]);
 				setTurn((prev) => prev + 1);
+				setSelectedDiv(null);
 				if (playerColor === "red") {
 					setPlayerColor("blue");
 				} else {
 					setPlayerColor("red");
 				}
 			}
+
 			window.removeEventListener("keypress", inputTile);
 		};
 		if (selectedDiv !== null) {
-			selectedDiv.classList.remove(`bg-${playerColor}-600`);
+			selectedDiv.classList.remove(`bg-${playerColor}-400`);
 		}
 		setSelectedDiv(divEvent.target);
-		divEvent.target.classList.add(`bg-${playerColor}-600`);
+		divEvent.target.classList.add(`bg-${playerColor}-400`);
 		console.log(divEvent.target);
 		if (tiles[key] === "") {
 			window.addEventListener("keypress", inputTile);
 		}
 	};
 	return (
-		<div className="grid grid-cols-12 gap-2 s:w-full md:w-1/2 lg:w-1/3 h-1/2">
+		<div className="m-20 sm:p-10 p-8 grid grid-cols-12 gap-2 sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-3/4 bg-stone-800 rounded ">
 			{tiles.map((value, key) => (
 				<div
 					ref={refs.current[key]}
-					className={`text-slate-900 rounded s:w-6 s:h-6 w-8 h-8 border-2 border-red-200 hover:border-blue-200 flex justify-center items-center `}
+					className={`text-slate-900 text-4xl font-mono rounded sm:w-12 sm:h-12 w-10 h-10 border-4 border-purple-600 hover:border-green-100 flex justify-center items-center `}
 					onClick={(event) => selectTile(key, event)}
 					key={key}
 				>

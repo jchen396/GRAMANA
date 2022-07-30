@@ -12,11 +12,11 @@ const io = socketIo(server, {
 
 //in case server and client run on different urls
 io.on("connection", (socket) => {
+	console.log(socket.id)
 	socket.on("disconnect", (reason) => {
 		console.log(`${reason} for ${socket.id}`);
 	});
 	socket.on("play", (key, tiles, playerColor) => {
-		console.log(`${key} ${tiles}`)
 		socket.broadcast.emit("play", key, tiles, playerColor);
 	});
 });
