@@ -16,8 +16,8 @@ io.on("connection", (socket) => {
 	socket.on("disconnect", (reason) => {
 		console.log(`${reason} for ${socket.id}`);
 	});
-	socket.on("play", (key, tiles, playerColor) => {
-		socket.broadcast.emit("play", key, tiles, playerColor);
+	socket.on("play", (tiles, boardColor, playerColor) => {
+		socket.broadcast.emit("play",tiles, boardColor, playerColor);
 	});
 	socket.on("message", message => {
 		socket.broadcast.emit("message" , message);
