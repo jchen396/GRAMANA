@@ -16,7 +16,7 @@ io.on("connection", (socket) => {
 		console.log(`${reason} for ${socket.id}`);
 	});
 	socket.on("play", (key, tiles, playerColor) => {
-		console.log(`key:${key} / tiles:${tiles} / playerColor:${playerColor}`);
+		console.log(`${key} ${tiles}`)
 		socket.broadcast.emit("play", key, tiles, playerColor);
 	});
 });
