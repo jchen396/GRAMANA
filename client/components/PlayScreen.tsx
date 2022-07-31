@@ -17,9 +17,7 @@ const PlayScreen = () => {
 	const [turn, setTurn] = useState(0);
 	const refs = useRef<any>([...new Array(100)].map(() => React.createRef()));
 	useEffect(() => {
-		socket.on("connect", () => console.log(socket.id));
 		socket.on("play", (grid, board, color) => {
-			console.log(board);
 			setTiles(grid);
 			setBoardColor({ ...boardColor, ...board });
 			grid.forEach((value: any, key: number) => {
@@ -551,7 +549,7 @@ const PlayScreen = () => {
 		}
 	};
 	return (
-		<div className="m-20 sm:p-10 p-8 grid grid-cols-10 gap-2 sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-3/4 bg-neutral-800 rounded ">
+		<div className="m-20 sm:p-20 p-8 grid grid-cols-10 gap-y-4 sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-3/4 bg-neutral-800 rounded place-content-center place-items-center">
 			{tiles.map((value, key) => (
 				<div
 					ref={refs.current[key]}

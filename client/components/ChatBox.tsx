@@ -6,14 +6,31 @@ const ChatBox = () => {
 	const [messageBoxes, setMessageBoxes] = useState<string[]>([]);
 	const ref = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
-		socket.on("connect", () => {
-			console.log(socket.id);
+		socket.emit("join");
+		socket.on("connect", () => {});
+		socket.on("join", (id) => {
+			setMessageBoxes((prevState: any) => [
+				...prevState,
+				`User ${id} has joined the game.`,
+			]);
+		});
+		socket.on("disconnect", () => {
+			socket.emit("leave");
+		});
+
+		socket.on("leave", (id) => {
+			setMessageBoxes((prevState: any) => [
+				...prevState,
+				`User ${id} has disconnect.`,
+			]);
 		});
 		socket.on("message", (msg) => {
 			setMessageBoxes((prevState) => [...prevState, msg]);
 		});
 		return () => {
 			socket.off("connect");
+			socket.off("message");
+			socket.off("disconnect");
 		};
 	}, []);
 	const changeMessageHandler = (e: any) => {
@@ -47,12 +64,17 @@ const ChatBox = () => {
 				onSubmit={(e) => sendMessage(e)}
 			>
 				<input
+					id="chatInput"
 					ref={ref}
 					placeholder="Enter a message..."
 					className="p-2 pb-6 rounded w-3/4 bg-stone-900 text-stone-50"
 					onChange={(e) => changeMessageHandler(e)}
 				/>
-				<button className="mx-2 p-4 rounded bg-emerald-600 flex justify-center items-center">
+				<button
+					form="chatInput"
+					type="submit"
+					className="mx-2 p-4 rounded bg-emerald-600 flex justify-center items-center"
+				>
 					Send
 				</button>
 			</form>
