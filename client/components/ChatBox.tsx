@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import socket from "./Socket";
 
 interface Props {
-	queryId: string | string[];
+	roomCode: string | string[];
+	userName: string | string[];
 }
 
-const ChatBox: React.FC<Props> = ({ queryId }) => {
+const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 	const [message, setMessage] = useState("");
 	const [messageBoxes, setMessageBoxes] = useState<string[]>([]);
 	const ref = useRef<HTMLInputElement | null>(null);
@@ -13,24 +14,24 @@ const ChatBox: React.FC<Props> = ({ queryId }) => {
 		console.log(socket);
 		setMessageBoxes((prevState: any) => [
 			...prevState,
-			`Room Code: [ ${queryId} ]`,
+			`Room Code: [ ${roomCode} ]`,
 		]);
-		socket.emit("join", queryId);
+		socket.emit("join", roomCode, userName);
 		socket.on("connect", () => {});
-		socket.on("join", (id) => {
+		socket.on("join", (user) => {
 			setMessageBoxes((prevState: any) => [
 				...prevState,
-				`User ${id} has joined the game.`,
+				`User ${user} has joined the game.`,
 			]);
 		});
 		socket.on("disconnect", () => {
 			socket.emit("leave");
 		});
 
-		socket.on("leave", (id) => {
+		socket.on("leave", (user) => {
 			setMessageBoxes((prevState: any) => [
 				...prevState,
-				`User ${id} has disconnect.`,
+				`User ${user} has disconnect.`,
 			]);
 		});
 		socket.on("message", (msg) => {
@@ -47,7 +48,7 @@ const ChatBox: React.FC<Props> = ({ queryId }) => {
 	};
 	const sendMessage = (e: any) => {
 		e.preventDefault();
-		let newMessage = `${socket.id}: ${message}`;
+		let newMessage = `${userName}: ${message}`;
 		socket.emit("message", newMessage);
 		setMessageBoxes((prevState) => [...prevState, newMessage]);
 		ref.current!.value = "";

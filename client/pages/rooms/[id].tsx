@@ -5,11 +5,13 @@ import { useRouter } from "next/router";
 
 const Room = () => {
 	const router = useRouter();
-	const queryId: string | string[] = router.query.id!;
+	console.log(router.query);
+	const roomCode: string | string[] = router.query.id!;
+	const userName: string | string[] = router.query.user!;
 	return (
 		<div className="w-screen h-screen bg-neutral-900 flex flex-wrap items-center justify-center space-x-20">
 			<PlayScreen />
-			<ChatBox queryId={queryId} />
+			<ChatBox roomCode={roomCode} userName={userName} />
 		</div>
 	);
 };
