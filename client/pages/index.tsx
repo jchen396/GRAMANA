@@ -1,7 +1,5 @@
 import type { NextPage } from "next";
-import ChatBox from "../components/ChatBox";
 import CreateRoom from "../components/CreateRoom";
-import PlayScreen from "../components/PlayScreen";
 
 const Home: NextPage = () => {
 	return (

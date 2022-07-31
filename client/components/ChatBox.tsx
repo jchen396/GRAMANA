@@ -1,12 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import socket from "./Socket";
 
-const ChatBox = () => {
+interface Props {
+	queryId: string | string[];
+}
+
+const ChatBox: React.FC<Props> = ({ queryId }) => {
 	const [message, setMessage] = useState("");
 	const [messageBoxes, setMessageBoxes] = useState<string[]>([]);
 	const ref = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
-		socket.emit("join");
+		console.log(socket);
+		setMessageBoxes((prevState: any) => [
+			...prevState,
+			`Room Code: [ ${queryId} ]`,
+		]);
+		socket.emit("join", queryId);
 		socket.on("connect", () => {});
 		socket.on("join", (id) => {
 			setMessageBoxes((prevState: any) => [
@@ -50,9 +59,12 @@ const ChatBox = () => {
 				{messageBoxes
 					.slice(0)
 					.reverse()
-					.map((msg) => {
+					.map((msg, key) => {
 						return (
-							<div className="p-2 mt-6 bg-stone-800 text-stone-50 rounded">
+							<div
+								key={key}
+								className="p-2 mt-6 bg-stone-800 text-stone-50 rounded"
+							>
 								{msg}
 							</div>
 						);

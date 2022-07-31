@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
+import { useRouter } from "next/router";
 
 const CreateRoom = () => {
 	const [roomCode, setRoomCode] = useState("");
+	const router = useRouter();
 	const enterRoomHandler = (e: any) => {
 		e.preventDefault();
+		router.push(`/rooms/${roomCode}`);
 		console.log(roomCode);
 	};
 	const textChangeHandler = (e: any) => {
@@ -19,6 +22,7 @@ const CreateRoom = () => {
 				className="flex justify-center items-center"
 			>
 				<input
+					required
 					onChange={(e) => textChangeHandler(e)}
 					className="text-2xl text-center text-medium uppercase rounded p-2"
 					type="text"

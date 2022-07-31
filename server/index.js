@@ -12,9 +12,9 @@ const io = socketIo(server, {
 
 //in case server and client run on different urls
 io.on("connection", (socket) => {
-	console.log(socket.id)
-	socket.on("join", () => {
-		io.emit("join", socket.id);
+	socket.on("join", (queryId) => {
+		socket.join(queryId)
+		io.to(queryId).emit("join", socket.id);
 	})
 	socket.on("disconnect", () => { 
 		io.emit("leave", socket.id);
