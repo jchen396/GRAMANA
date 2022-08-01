@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import PlayScreen from "../../components/PlayScreen";
 import ChatBox from "../../components/ChatBox";
+import PlayScreen from "../../components/PlayScreen";
 import { useRouter } from "next/router";
 
 const Room = () => {

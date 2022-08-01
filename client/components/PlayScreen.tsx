@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, createRef } from "react";
 import socket from "./Socket";
-const AVAILABLE_LETTERS = "PURPLE".split("");
+const AVAILABLE_LETTERS = "GREEN".split("");
 const PlayScreen = () => {
 	let initialArr: string[] = [];
 
@@ -549,7 +549,7 @@ const PlayScreen = () => {
 		}
 	};
 	return (
-		<div className="m-20 sm:p-20 p-8 grid grid-cols-10 gap-y-4 sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-3/4 bg-neutral-800 rounded place-content-center place-items-center">
+		<div className="m-20 sm:p-10 p-8 grid grid-cols-10 gap-y-4 sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-3/4 bg-neutral-800 rounded place-content-center place-items-center">
 			{tiles.map((value, key) => (
 				<div
 					ref={refs.current[key]}

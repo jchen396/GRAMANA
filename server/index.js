@@ -21,12 +21,17 @@ io.on("connection", (socket) => {
 				room: roomCode,
 			});
 			socket.join(user.room);
-			io.to(user.room).emit("join", user.name);
+			const userList = getUsersInRoom(user.room);
+			io.to(user.room).emit("join", user.name, userList);
 		} catch {}
 	});
 	socket.on("disconnect", () => {
-		const user = getUser(socket.id);
-		io.emit("leave", user.name);
+		try {
+			const user = getUser(socket.id);
+			removeUser(socket.id);
+			const userList = getUsersInRoom(user.room);
+			io.emit("leave", user.name, userList);
+		} catch {}
 	});
 	socket.on("play", (tiles, boardColor, playerColor) => {
 		try {
