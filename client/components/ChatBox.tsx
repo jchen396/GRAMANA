@@ -27,7 +27,7 @@ const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 			setUserList(listOfUsers);
 		});
 		socket.on("disconnect", () => {
-			socket.emit("leave");
+			socket.emit("leave", userList);
 		});
 
 		socket.on("leave", (user: string, listOfUsers: object[]) => {

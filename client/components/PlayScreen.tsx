@@ -8,16 +8,24 @@ const PlayScreen = () => {
 	for (let i = 0; i < 100; i++) {
 		initialArr.push("");
 	}
+	const [gameStart, setGameStart] = useState<boolean>(false);
+	const [playerTurn, setPlayerTurn] = useState<string>("");
+	const [playerList, setPlayerList] = useState<any[]>([]);
 	const [tiles, setTiles] = useState(initialArr);
-	const [selectedIndex, setSelectedIndex] = useState(-1);
-	const [isWin, setIsWin] = useState(false);
-	const [playerColor, setPlayerColor] = useState("red");
+	const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+	const [isWin, setIsWin] = useState<boolean>(false);
+	const [playerColor, setPlayerColor] = useState<string>("red");
 	const [boardColor, setBoardColor] = useState({});
 	const [selectedDiv, setSelectedDiv] = useState<HTMLDivElement | null>(null);
 	const [turn, setTurn] = useState(0);
 	const refs = useRef<any>([...new Array(100)].map(() => React.createRef()));
 	useEffect(() => {
-		socket.on("play", (grid, board, color) => {
+		socket.on("start", (userList) => {
+			setGameStart(true);
+			setPlayerList(userList);
+			setPlayerTurn(userList[0].id);
+		});
+		socket.on("play", (grid, board, color, userList) => {
 			setTiles(grid);
 			setBoardColor({ ...boardColor, ...board });
 			grid.forEach((value: any, key: number) => {
@@ -34,8 +42,10 @@ const PlayScreen = () => {
 			});
 			if (color === "red") {
 				setPlayerColor("blue");
+				setPlayerTurn(userList[1].id);
 			} else {
 				setPlayerColor("red");
+				setPlayerTurn(userList[0].id);
 			}
 		});
 		return () => {
@@ -508,44 +518,51 @@ const PlayScreen = () => {
 	}, [turn]);
 	//This function will be invoked whenever a tile is clicked
 	const selectTile = (key: number, divEvent: any) => {
-		// This function will read the keyboard and input character if it is part of "PURPLE"
-		const inputTile = (keyPressEvent: any) => {
-			let inputChar;
-			if (AVAILABLE_LETTERS.includes(keyPressEvent.key.toUpperCase())) {
-				inputChar = keyPressEvent.key.toUpperCase();
-				setSelectedIndex(key);
-				setTiles([
-					...tiles.slice(0, key),
-					inputChar,
-					...tiles.slice(key + 1, tiles.length),
-				]);
-				setTurn((prev) => prev + 1);
-				setSelectedDiv(null);
-				if (playerColor === "red") {
-					setPlayerColor("blue");
-					setBoardColor({ ...boardColor, [key]: "red" });
+		console.log(playerTurn, socket.id);
+		if (gameStart && playerTurn == socket.id) {
+			// This function will read the keyboard and input character if it is part of the word
+			const inputTile = (keyPressEvent: any) => {
+				let inputChar;
+				if (
+					AVAILABLE_LETTERS.includes(keyPressEvent.key.toUpperCase())
+				) {
+					inputChar = keyPressEvent.key.toUpperCase();
+					setSelectedIndex(key);
+					setTiles([
+						...tiles.slice(0, key),
+						inputChar,
+						...tiles.slice(key + 1, tiles.length),
+					]);
+					setTurn((prev) => prev + 1);
+					setSelectedDiv(null);
+					if (playerColor === "red") {
+						setPlayerColor("blue");
+						setPlayerTurn(playerList[1].id);
+						setBoardColor({ ...boardColor, [key]: "red" });
+					} else {
+						setPlayerColor("red");
+						setPlayerTurn(playerList[0].id);
+						setBoardColor({ ...boardColor, [key]: "blue" });
+					}
+				}
+				window.removeEventListener("keypress", inputTile);
+			};
+			if (selectedDiv !== null) {
+				if (playerColor == "red") {
+					selectedDiv.classList.remove(`bg-red-400`);
 				} else {
-					setPlayerColor("red");
-					setBoardColor({ ...boardColor, [key]: "blue" });
+					selectedDiv.classList.remove(`bg-blue-400`);
 				}
 			}
-			window.removeEventListener("keypress", inputTile);
-		};
-		if (selectedDiv !== null) {
+			setSelectedDiv(divEvent.target);
 			if (playerColor == "red") {
-				selectedDiv.classList.remove(`bg-red-400`);
+				divEvent.target.classList.add(`bg-red-400`);
 			} else {
-				selectedDiv.classList.remove(`bg-blue-400`);
+				divEvent.target.classList.add(`bg-blue-400`);
 			}
-		}
-		setSelectedDiv(divEvent.target);
-		if (playerColor == "red") {
-			divEvent.target.classList.add(`bg-red-400`);
-		} else {
-			divEvent.target.classList.add(`bg-blue-400`);
-		}
-		if (tiles[key] === "") {
-			window.addEventListener("keypress", inputTile);
+			if (tiles[key] === "") {
+				window.addEventListener("keypress", inputTile);
+			}
 		}
 	};
 	return (

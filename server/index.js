@@ -22,6 +22,9 @@ io.on("connection", (socket) => {
 			});
 			socket.join(user.room);
 			const userList = getUsersInRoom(user.room);
+			if (userList.length <= 2) {
+				io.to(user.room).emit("start", userList);
+			}
 			io.to(user.room).emit("join", user.name, userList);
 		} catch {}
 	});
@@ -30,15 +33,16 @@ io.on("connection", (socket) => {
 			const user = getUser(socket.id);
 			removeUser(socket.id);
 			const userList = getUsersInRoom(user.room);
-			io.emit("leave", user.name, userList);
+			io.to(user.room).emit("leave", user.name, userList);
 		} catch {}
 	});
 	socket.on("play", (tiles, boardColor, playerColor) => {
 		try {
 			const user = getUser(socket.id);
+			const userList = getUsersInRoom(user.room);
 			socket.broadcast
 				.to(user.room)
-				.emit("play", tiles, boardColor, playerColor);
+				.emit("play", tiles, boardColor, playerColor, userList);
 		} catch {}
 	});
 	socket.on("message", (message) => {
