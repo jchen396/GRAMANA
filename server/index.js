@@ -1,5 +1,6 @@
 const express = require("express");
 const { addUser, removeUser, getUser, getUsersInRoom } = require("./users");
+const wordList = require("./anagaml-list.json");
 const socketIo = require("socket.io");
 const http = require("http");
 const PORT = process.env.PORT || 8080;
@@ -15,6 +16,8 @@ const io = socketIo(server, {
 io.on("connection", (socket) => {
 	socket.on("join", (roomCode, userName) => {
 		try {
+			const RANDOM_ANAGRAM_LIST =
+				wordList[Math.floor(Math.random() * wordList.length)];
 			const { user } = addUser({
 				id: socket.id,
 				name: userName,
@@ -23,7 +26,16 @@ io.on("connection", (socket) => {
 			socket.join(user.room);
 			const userList = getUsersInRoom(user.room);
 			if (userList.length <= 2) {
-				io.to(user.room).emit("start", userList);
+				playerObj = {
+					[userList[0].id]: 0,
+					[userList[1].id]: 1,
+				};
+				io.to(user.room).emit(
+					"start",
+					userList,
+					RANDOM_ANAGRAM_LIST,
+					playerObj
+				);
 			}
 			io.to(user.room).emit("join", user.name, userList);
 		} catch {}
@@ -53,8 +65,8 @@ io.on("connection", (socket) => {
 	});
 	socket.on("turn", (userId) => {
 		const user = getUser(socket.id);
-		io.to(user.room).emit("turn", userId)
-	})
+		io.to(user.room).emit("turn", userId);
+	});
 });
 server.listen(PORT, (err) => {
 	if (err) console.log(err);
