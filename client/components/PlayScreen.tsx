@@ -26,6 +26,33 @@ const PlayScreen = () => {
 	const refs = useRef<any>([...new Array(64)].map(() => React.createRef()));
 	useEffect(() => {
 		socket.on(
+			"reset",
+			(userList, RANDOM_ANAGRAM_LIST: string[], playerObj) => {
+				setShowResult(false);
+				setIsWin(false);
+				setTiles(initialArr);
+				setWinner("");
+				setWinWord("");
+				setBoardColor({});
+				setPlayerList(userList);
+				setPlayerTurn(userList[0].id);
+				tiles.forEach((value: any, key: any) => {
+					refs.current[key].current.classList.remove("bg-red-400");
+					refs.current[key].current.classList.remove("bg-blue-400");
+				});
+				setWord(
+					RANDOM_ANAGRAM_LIST[playerObj[socket.id]].toUpperCase()
+				);
+				setAvaialbleLetters(
+					RANDOM_ANAGRAM_LIST[playerObj[socket.id]]
+						.toUpperCase()
+						.split("")
+				);
+
+				socket.emit("turn", userList[0].id);
+			}
+		);
+		socket.on(
 			"start",
 			(userList, RANDOM_ANAGRAM_LIST: string[], playerObj) => {
 				setGameStart(true);
@@ -591,7 +618,7 @@ const PlayScreen = () => {
 		}
 	};
 	const resetHandler = () => {
-		setShowResult(false);
+		socket.emit("reset");
 	};
 	return (
 		<div className=" relative m-20 sm:p-10 p-8 sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-3/4 bg-neutral-800 rounded-2xl place-content-center place-items-center">

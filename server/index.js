@@ -68,7 +68,26 @@ io.on("connection", (socket) => {
 		io.to(user.room).emit("turn", userId);
 	});
 	socket.on("result", (word, playerName) => {
-		io.emit("result", word, playerName);
+		const user = getUser(socket.id);
+		io.to(user.room).emit("result", word, playerName);
+	});
+	socket.on("reset", () => {
+		const RANDOM_ANAGRAM_LIST =
+			wordList[Math.floor(Math.random() * wordList.length)];
+		const user = getUser(socket.id);
+		const userList = getUsersInRoom(user.room);
+		if (userList.length <= 2) {
+			playerObj = {
+				[userList[0].id]: 0,
+				[userList[1].id]: 1,
+			};
+			io.to(user.room).emit(
+				"reset",
+				userList,
+				RANDOM_ANAGRAM_LIST,
+				playerObj
+			);
+		}
 	});
 });
 server.listen(PORT, (err) => {
