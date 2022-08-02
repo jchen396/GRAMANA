@@ -10,6 +10,7 @@ const PlayScreen = () => {
 	const [word, setWord] = useState<string>("");
 	const [availableLetters, setAvaialbleLetters] = useState<string[]>([]);
 	const [gameStart, setGameStart] = useState<boolean>(false);
+	const [playerName, setPlayerName] = useState<string>("");
 	const [playerTurn, setPlayerTurn] = useState<string>("");
 	const [playerList, setPlayerList] = useState<any[]>([]);
 	const [tiles, setTiles] = useState(initialArr);
@@ -19,6 +20,9 @@ const PlayScreen = () => {
 	const [boardColor, setBoardColor] = useState({});
 	const [selectedDiv, setSelectedDiv] = useState<HTMLDivElement | null>(null);
 	const [turn, setTurn] = useState(0);
+	const [showResult, setShowResult] = useState<boolean>(false);
+	const [winner, setWinner] = useState<string>("");
+	const [winWord, setWinWord] = useState<string>("");
 	const refs = useRef<any>([...new Array(64)].map(() => React.createRef()));
 	useEffect(() => {
 		socket.on(
@@ -27,6 +31,7 @@ const PlayScreen = () => {
 				setGameStart(true);
 				setPlayerList(userList);
 				setPlayerTurn(userList[0].id);
+				setPlayerName(userList[playerObj[socket.id]].name);
 				setWord(
 					RANDOM_ANAGRAM_LIST[playerObj[socket.id]].toUpperCase()
 				);
@@ -63,9 +68,15 @@ const PlayScreen = () => {
 				socket.emit("turn", userList[0].id);
 			}
 		});
+		socket.on("result", (wordResult: string, nameResult: string) => {
+			setShowResult(true);
+			setWinner(nameResult);
+			setWinWord(wordResult);
+		});
 		return () => {
 			socket.off("start");
 			socket.off("play");
+			socket.off("result");
 		};
 	}, []);
 	useEffect(() => {
@@ -518,7 +529,7 @@ const PlayScreen = () => {
 		checkDownRight();
 		//check game status
 		if (isWin) {
-			console.log(`${playerColor} lost the game!`);
+			socket.emit("result", word, playerName);
 		}
 	}, [selectedIndex, tiles, isWin, playerColor]);
 	//Emitting socket.io event after every valid input && pass new Color
@@ -533,7 +544,7 @@ const PlayScreen = () => {
 	}, [turn]);
 	//This function will be invoked whenever a tile is clicked
 	const selectTile = (key: number, divEvent: any) => {
-		if (gameStart && playerTurn == socket.id) {
+		if (gameStart && playerTurn == socket.id && showResult === false) {
 			// This function will read the keyboard and input character if it is part of the word
 			const inputTile = (keyPressEvent: any) => {
 				let inputChar;
@@ -579,8 +590,11 @@ const PlayScreen = () => {
 			}
 		}
 	};
+	const resetHandler = () => {
+		setShowResult(false);
+	};
 	return (
-		<div className="m-20 sm:p-10 p-8 sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-3/4 bg-neutral-800 rounded-2xl place-content-center place-items-center">
+		<div className=" relative m-20 sm:p-10 p-8 sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-3/4 bg-neutral-800 rounded-2xl place-content-center place-items-center">
 			{gameStart ? (
 				<div className="text-3xl text-stone-50 flex justify-center items-center">
 					<h1>YOUR WORD IS&nbsp;</h1>
@@ -604,6 +618,20 @@ const PlayScreen = () => {
 					</div>
 				))}
 			</div>
+			{showResult ? (
+				<div className="absolute inset-1/4 w-1/2 h-1/4 bg-neutral-700 rounded-2xl flex flex-col justify-center items-center gap-y-6">
+					<h1 className="text-stone-50 text-2xl">
+						{winner} has won with the word{" "}
+						<span className="text-purple-400">{winWord}</span>
+					</h1>
+					<button
+						onClick={() => resetHandler()}
+						className="w-1/3 h-1/5 bg-emerald-600 hover:bg-emerald-400 rounded-full"
+					>
+						Play again
+					</button>
+				</div>
+			) : null}
 		</div>
 	);
 };

@@ -25,6 +25,7 @@ io.on("connection", (socket) => {
 			});
 			socket.join(user.room);
 			const userList = getUsersInRoom(user.room);
+			io.to(user.room).emit("join", user.name, userList);
 			if (userList.length <= 2) {
 				playerObj = {
 					[userList[0].id]: 0,
@@ -37,7 +38,6 @@ io.on("connection", (socket) => {
 					playerObj
 				);
 			}
-			io.to(user.room).emit("join", user.name, userList);
 		} catch {}
 	});
 	socket.on("disconnect", () => {
@@ -66,6 +66,9 @@ io.on("connection", (socket) => {
 	socket.on("turn", (userId) => {
 		const user = getUser(socket.id);
 		io.to(user.room).emit("turn", userId);
+	});
+	socket.on("result", (word, playerName) => {
+		io.emit("result", word, playerName);
 	});
 });
 server.listen(PORT, (err) => {
