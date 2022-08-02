@@ -11,13 +11,17 @@ const PlayerList: React.FC<Props> = ({ userList, userTurn }) => {
 			<h1 className=" text-stone-50 text-2xl">Users List: </h1>
 			<div className="p-4 w-full h-4/5 rounded-2xl flex flex-col justify-start items-center overflow-auto bg-stone-900">
 				{userList?.map((user: any) => (
-					<div className="flex flex-row " key={user.id}>
+					<div className="w-full flex justify-center" key={user.id}>
 						{user.id == userTurn ? (
-							<p className="text-xl px-20 text-stone-50 bg-purple-400 rounded-2xl ">
-								{user.name}
-							</p>
+							<div className=" flex w-1/2 justify-between px-2 text-xl text-stone-50 bg-purple-400 rounded-2xl ">
+								<span className="">{user.name}</span>
+								<span className="">{user.score}</span>
+							</div>
 						) : (
-							<p className="text-xl text-stone-50">{user.name}</p>
+							<div className="flex w-1/2 justify-between px-2 text-xl  text-stone-50 ">
+								<span className="">{user.name}</span>
+								<span className="">{user.score}</span>
+							</div>
 						)}
 					</div>
 				))}

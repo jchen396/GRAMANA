@@ -22,6 +22,7 @@ io.on("connection", (socket) => {
 				id: socket.id,
 				name: userName,
 				room: roomCode,
+				score: 0,
 			});
 			socket.join(user.room);
 			const userList = getUsersInRoom(user.room);
@@ -67,8 +68,11 @@ io.on("connection", (socket) => {
 		const user = getUser(socket.id);
 		io.to(user.room).emit("turn", userId);
 	});
-	socket.on("result", (word, playerName) => {
+	socket.on("result", (word, playerName, currentScore) => {
 		const user = getUser(socket.id);
+		user.score = currentScore;
+		const userList = getUsersInRoom(user.room);
+		io.to(user.room).emit("update", userList);
 		io.to(user.room).emit("result", word, playerName);
 	});
 	socket.on("reset", () => {

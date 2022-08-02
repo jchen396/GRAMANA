@@ -23,6 +23,7 @@ const PlayScreen = () => {
 	const [showResult, setShowResult] = useState<boolean>(false);
 	const [winner, setWinner] = useState<string>("");
 	const [winWord, setWinWord] = useState<string>("");
+	const [currentScore, setCurrentScore] = useState<number>(0);
 	const refs = useRef<any>([...new Array(64)].map(() => React.createRef()));
 	useEffect(() => {
 		socket.on(
@@ -157,6 +158,7 @@ const PlayScreen = () => {
 				}
 				if (rightCheck && leftCheck) {
 					setIsWin(true);
+					setCurrentScore((prevState) => prevState + 1);
 				}
 			}
 		};
@@ -213,6 +215,7 @@ const PlayScreen = () => {
 				}
 				if (rightCheck && leftCheck) {
 					setIsWin(true);
+					setCurrentScore((prevState) => prevState + 1);
 				}
 			}
 		};
@@ -268,6 +271,7 @@ const PlayScreen = () => {
 				}
 				if (rightCheck && leftCheck) {
 					setIsWin(true);
+					setCurrentScore((prevState) => prevState + 1);
 				}
 			}
 		};
@@ -323,6 +327,7 @@ const PlayScreen = () => {
 				}
 				if (rightCheck && leftCheck) {
 					setIsWin(true);
+					setCurrentScore((prevState) => prevState + 1);
 				}
 			}
 		};
@@ -378,6 +383,7 @@ const PlayScreen = () => {
 				}
 				if (rightCheck && leftCheck) {
 					setIsWin(true);
+					setCurrentScore((prevState) => prevState + 1);
 				}
 			}
 		};
@@ -433,6 +439,7 @@ const PlayScreen = () => {
 				}
 				if (rightCheck && leftCheck) {
 					setIsWin(true);
+					setCurrentScore((prevState) => prevState + 1);
 				}
 			}
 		};
@@ -488,6 +495,7 @@ const PlayScreen = () => {
 				}
 				if (rightCheck && leftCheck) {
 					setIsWin(true);
+					setCurrentScore((prevState) => prevState + 1);
 				}
 			}
 		};
@@ -543,6 +551,7 @@ const PlayScreen = () => {
 				}
 				if (rightCheck && leftCheck) {
 					setIsWin(true);
+					setCurrentScore((prevState) => prevState + 1);
 				}
 			}
 		};
@@ -556,7 +565,7 @@ const PlayScreen = () => {
 		checkDownRight();
 		//check game status
 		if (isWin) {
-			socket.emit("result", word, playerName);
+			socket.emit("result", word, playerName, currentScore);
 		}
 	}, [selectedIndex, tiles, isWin, playerColor]);
 	//Emitting socket.io event after every valid input && pass new Color
