@@ -9,6 +9,7 @@ interface Props {
 
 const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 	const [userList, setUserList] = useState<object[]>([]);
+	const [userTurn, setUserTurn] = useState<string>();
 	const [message, setMessage] = useState<string>("");
 	const [messageBoxes, setMessageBoxes] = useState<string[]>([]);
 	const ref = useRef<HTMLInputElement | null>(null);
@@ -40,9 +41,15 @@ const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 		socket.on("message", (msg) => {
 			setMessageBoxes((prevState) => [...prevState, msg]);
 		});
+		socket.on("turn", (userId: string) => {
+			setUserTurn(userId);
+		});
 		return () => {
 			socket.off("connect");
+			socket.off("join");
+			socket.off("leave");
 			socket.off("message");
+			socket.off("turn");
 			socket.off("disconnect");
 		};
 	}, []);
@@ -59,10 +66,10 @@ const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 
 	return (
 		<div className="flex flex-col gap-y-10 sm:w-full md:w-1/4 sm:h-4/5 h-3/4 ">
-			<PlayerList userList={userList} />
+			<PlayerList userList={userList} userTurn={userTurn} />
 
 			<div className="relative h-4/5 bg-neutral-800 rounded flex">
-				<div className="p-4 m-4 w-full h-5/6 rounded flex flex-col-reverse justify-start items-start overflow-auto bg-stone-900">
+				<div className="p-4 m-4 w-full h-5/6 rounded flex flex-col-reverse justify-start items-start overflow-y-scroll break-all overflow-wrap bg-stone-900">
 					{messageBoxes
 						.slice(0)
 						.reverse()
@@ -79,11 +86,11 @@ const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 				</div>
 
 				<form
+					id="chatInput"
 					className="absolute mb-4 flex justify-center items-center w-full self-end"
 					onSubmit={(e) => sendMessage(e)}
 				>
 					<input
-						id="chatInput"
 						ref={ref}
 						placeholder="Enter a message..."
 						className="p-2 pb-6 rounded w-3/4 bg-stone-900 text-stone-50"
@@ -92,7 +99,7 @@ const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 					<button
 						form="chatInput"
 						type="submit"
-						className="mx-2 p-4 rounded bg-emerald-600 flex justify-center items-center"
+						className="mx-2 p-4 rounded bg-emerald-600 hover:bg-emerald-400 flex justify-center items-center"
 					>
 						Send
 					</button>

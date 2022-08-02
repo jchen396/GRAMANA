@@ -51,6 +51,10 @@ io.on("connection", (socket) => {
 			socket.broadcast.to(user.room).emit("message", message);
 		} catch {}
 	});
+	socket.on("turn", (userId) => {
+		const user = getUser(socket.id);
+		io.to(user.room).emit("turn", userId)
+	})
 });
 server.listen(PORT, (err) => {
 	if (err) console.log(err);

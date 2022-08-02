@@ -8,13 +8,10 @@ const CreateRoom = () => {
 	const router = useRouter();
 	const enterRoomHandler = (e: any) => {
 		e.preventDefault();
-	};
-	const enterRoomButtonHandler = () => {
 		router.push({
 			pathname: `/rooms/${roomCode}`,
 			query: { user: username },
 		});
-		console.log(username, roomCode);
 	};
 	const userTextHandler = (e: any) => {
 		setUsername(e.target.value);
@@ -45,12 +42,9 @@ const CreateRoom = () => {
 					className="m-4 text-2xl text-center text-medium uppercase rounded p-2 bg-stone-900 text-stone-50"
 					type="text"
 				/>
-
-				<ArrowCircleRightIcon
-					onClick={() => enterRoomButtonHandler()}
-					type="submit"
-					className="m-2 w-12 h-12 bg-emerald-600 hover:bg-emerald-400 cursor-pointer rounded-full"
-				/>
+				<button type="submit">
+					<ArrowCircleRightIcon className="m-2 w-12 h-12 bg-emerald-600 hover:bg-emerald-400 cursor-pointer rounded-full" />
+				</button>
 			</form>
 		</div>
 	);

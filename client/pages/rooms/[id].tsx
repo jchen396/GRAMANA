@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 
 const Room = () => {
 	const router = useRouter();
-	console.log(router.query);
 	const roomCode: string | string[] = router.query.id!;
 	const userName: string | string[] = router.query.user!;
 	return (

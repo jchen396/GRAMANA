@@ -1,11 +1,13 @@
 import React, { useRef, useEffect, useState, createRef } from "react";
 import socket from "./Socket";
-const AVAILABLE_LETTERS = "GREEN".split("");
+import wordList from "./../4letterwordlist.json";
+const RANDOM_WORD = wordList[Math.floor(Math.random() * 493)].toUpperCase();
+const AVAILABLE_LETTERS = RANDOM_WORD.split("");
 const PlayScreen = () => {
 	let initialArr: string[] = [];
 
 	// For loops will generate an array of empty strings
-	for (let i = 0; i < 100; i++) {
+	for (let i = 0; i < 64; i++) {
 		initialArr.push("");
 	}
 	const [gameStart, setGameStart] = useState<boolean>(false);
@@ -18,12 +20,13 @@ const PlayScreen = () => {
 	const [boardColor, setBoardColor] = useState({});
 	const [selectedDiv, setSelectedDiv] = useState<HTMLDivElement | null>(null);
 	const [turn, setTurn] = useState(0);
-	const refs = useRef<any>([...new Array(100)].map(() => React.createRef()));
+	const refs = useRef<any>([...new Array(64)].map(() => React.createRef()));
 	useEffect(() => {
 		socket.on("start", (userList) => {
 			setGameStart(true);
 			setPlayerList(userList);
 			setPlayerTurn(userList[0].id);
+			socket.emit("turn", userList[0].id);
 		});
 		socket.on("play", (grid, board, color, userList) => {
 			setTiles(grid);
@@ -43,13 +46,15 @@ const PlayScreen = () => {
 			if (color === "red") {
 				setPlayerColor("blue");
 				setPlayerTurn(userList[1].id);
+				socket.emit("turn", userList[1].id);
 			} else {
 				setPlayerColor("red");
 				setPlayerTurn(userList[0].id);
+				socket.emit("turn", userList[0].id);
 			}
 		});
 		return () => {
-			socket.off("connect");
+			socket.off("start");
 			socket.off("play");
 		};
 	}, []);
@@ -181,11 +186,11 @@ const PlayScreen = () => {
 					if (
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) + i
-						] === tiles[selectedIndex + i * 10] ||
+						] === tiles[selectedIndex + i * 8] ||
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) +
 								i
-						] === tiles[selectedIndex + i * 10]
+						] === tiles[selectedIndex + i * 8]
 					) {
 						if (i === rightCharacters) {
 							rightCheck = true;
@@ -201,11 +206,11 @@ const PlayScreen = () => {
 					if (
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) - i
-						] === tiles[selectedIndex - i * 10] ||
+						] === tiles[selectedIndex - i * 8] ||
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) -
 								i
-						] === tiles[selectedIndex - i * 10]
+						] === tiles[selectedIndex - i * 8]
 					) {
 						if (i === leftCharacters || leftCharacters === 0) {
 							leftCheck = true;
@@ -236,11 +241,11 @@ const PlayScreen = () => {
 					if (
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) + i
-						] === tiles[selectedIndex - i * 10] ||
+						] === tiles[selectedIndex - i * 8] ||
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) +
 								i
-						] === tiles[selectedIndex - i * 10]
+						] === tiles[selectedIndex - i * 8]
 					) {
 						if (i === rightCharacters) {
 							rightCheck = true;
@@ -256,11 +261,11 @@ const PlayScreen = () => {
 					if (
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) - i
-						] === tiles[selectedIndex + i * 10] ||
+						] === tiles[selectedIndex + i * 8] ||
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) -
 								i
-						] === tiles[selectedIndex + i * 10]
+						] === tiles[selectedIndex + i * 8]
 					) {
 						if (i === leftCharacters || leftCharacters === 0) {
 							leftCheck = true;
@@ -291,11 +296,11 @@ const PlayScreen = () => {
 					if (
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) + i
-						] === tiles[selectedIndex - i * 9] ||
+						] === tiles[selectedIndex - i * 7] ||
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) +
 								i
-						] === tiles[selectedIndex - i * 9]
+						] === tiles[selectedIndex - i * 7]
 					) {
 						if (i === rightCharacters) {
 							rightCheck = true;
@@ -311,11 +316,11 @@ const PlayScreen = () => {
 					if (
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) - i
-						] === tiles[selectedIndex + i * 9] ||
+						] === tiles[selectedIndex + i * 7] ||
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) -
 								i
-						] === tiles[selectedIndex + i * 9]
+						] === tiles[selectedIndex + i * 7]
 					) {
 						if (i === leftCharacters || leftCharacters === 0) {
 							leftCheck = true;
@@ -346,11 +351,11 @@ const PlayScreen = () => {
 					if (
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) + i
-						] === tiles[selectedIndex - i * 11] ||
+						] === tiles[selectedIndex - i * 9] ||
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) +
 								i
-						] === tiles[selectedIndex - i * 11]
+						] === tiles[selectedIndex - i * 9]
 					) {
 						if (i === rightCharacters) {
 							rightCheck = true;
@@ -366,11 +371,11 @@ const PlayScreen = () => {
 					if (
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) - i
-						] === tiles[selectedIndex + i * 11] ||
+						] === tiles[selectedIndex + i * 9] ||
 						AVAILABLE_LETTERS[
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) -
 								i
-						] === tiles[selectedIndex + i * 11]
+						] === tiles[selectedIndex + i * 9]
 					) {
 						if (i === leftCharacters || leftCharacters === 0) {
 							leftCheck = true;
@@ -384,6 +389,61 @@ const PlayScreen = () => {
 			}
 		};
 		const checkDownLeft = () => {
+			if (isWin === false) {
+				let rightCharacters =
+					AVAILABLE_LETTERS.length -
+					1 -
+					AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]);
+				let leftCharacters = AVAILABLE_LETTERS.indexOf(
+					tiles[selectedIndex]
+				);
+				let rightCheck = false;
+				let leftCheck = false;
+				if (rightCharacters === 0) rightCheck = true;
+				for (let i = 1; i < rightCharacters + 1; i++) {
+					//check right side of AVAILABLE_LETTERS array
+					if (rightCharacters === 0) rightCheck = true;
+					if (
+						AVAILABLE_LETTERS[
+							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) + i
+						] === tiles[selectedIndex + i * 7] ||
+						AVAILABLE_LETTERS[
+							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) +
+								i
+						] === tiles[selectedIndex + i * 7]
+					) {
+						if (i === rightCharacters) {
+							rightCheck = true;
+						}
+						continue;
+					} else break;
+					rightCheck = true;
+				}
+				if (leftCharacters === 0) leftCheck = true;
+				for (let i = 1; i < leftCharacters + 1; i++) {
+					//check left side of AVAILABLE_LETTERS array
+					if (leftCharacters === 0) leftCheck = true;
+					if (
+						AVAILABLE_LETTERS[
+							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) - i
+						] === tiles[selectedIndex - i * 7] ||
+						AVAILABLE_LETTERS[
+							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) -
+								i
+						] === tiles[selectedIndex - i * 7]
+					) {
+						if (i === leftCharacters || leftCharacters === 0) {
+							leftCheck = true;
+						}
+						continue;
+					} else break;
+				}
+				if (rightCheck && leftCheck) {
+					setIsWin(true);
+				}
+			}
+		};
+		const checkDownRight = () => {
 			if (isWin === false) {
 				let rightCharacters =
 					AVAILABLE_LETTERS.length -
@@ -426,61 +486,6 @@ const PlayScreen = () => {
 							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) -
 								i
 						] === tiles[selectedIndex - i * 9]
-					) {
-						if (i === leftCharacters || leftCharacters === 0) {
-							leftCheck = true;
-						}
-						continue;
-					} else break;
-				}
-				if (rightCheck && leftCheck) {
-					setIsWin(true);
-				}
-			}
-		};
-		const checkDownRight = () => {
-			if (isWin === false) {
-				let rightCharacters =
-					AVAILABLE_LETTERS.length -
-					1 -
-					AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]);
-				let leftCharacters = AVAILABLE_LETTERS.indexOf(
-					tiles[selectedIndex]
-				);
-				let rightCheck = false;
-				let leftCheck = false;
-				if (rightCharacters === 0) rightCheck = true;
-				for (let i = 1; i < rightCharacters + 1; i++) {
-					//check right side of AVAILABLE_LETTERS array
-					if (rightCharacters === 0) rightCheck = true;
-					if (
-						AVAILABLE_LETTERS[
-							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) + i
-						] === tiles[selectedIndex + i * 11] ||
-						AVAILABLE_LETTERS[
-							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) +
-								i
-						] === tiles[selectedIndex + i * 11]
-					) {
-						if (i === rightCharacters) {
-							rightCheck = true;
-						}
-						continue;
-					} else break;
-					rightCheck = true;
-				}
-				if (leftCharacters === 0) leftCheck = true;
-				for (let i = 1; i < leftCharacters + 1; i++) {
-					//check left side of AVAILABLE_LETTERS array
-					if (leftCharacters === 0) leftCheck = true;
-					if (
-						AVAILABLE_LETTERS[
-							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex]) - i
-						] === tiles[selectedIndex - i * 11] ||
-						AVAILABLE_LETTERS[
-							AVAILABLE_LETTERS.indexOf(tiles[selectedIndex], 2) -
-								i
-						] === tiles[selectedIndex - i * 11]
 					) {
 						if (i === leftCharacters || leftCharacters === 0) {
 							leftCheck = true;
@@ -518,7 +523,6 @@ const PlayScreen = () => {
 	}, [turn]);
 	//This function will be invoked whenever a tile is clicked
 	const selectTile = (key: number, divEvent: any) => {
-		console.log(playerTurn, socket.id);
 		if (gameStart && playerTurn == socket.id) {
 			// This function will read the keyboard and input character if it is part of the word
 			const inputTile = (keyPressEvent: any) => {
@@ -566,17 +570,24 @@ const PlayScreen = () => {
 		}
 	};
 	return (
-		<div className="m-20 sm:p-10 p-8 grid grid-cols-10 gap-y-4 sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-3/4 bg-neutral-800 rounded place-content-center place-items-center">
-			{tiles.map((value, key) => (
-				<div
-					ref={refs.current[key]}
-					className={`text-stone-50 text-4xl font-bold font-mono rounded sm:w-14 sm:h-14 w-12 h-12 border-4 border-purple-600 hover:border-green-100 flex justify-center items-center `}
-					onClick={(event) => selectTile(key, event)}
-					key={key}
-				>
-					{value}
-				</div>
-			))}
+		<div className="m-20 sm:p-10 p-8 sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-3/4 bg-neutral-800 rounded place-content-center place-items-center">
+			<div className="text-3xl text-stone-50 flex justify-center items-center">
+				<h1>THE WORD IS&nbsp;</h1>
+				<span className="text-purple-400"> {RANDOM_WORD}</span>
+			</div>
+			<br />
+			<div className="m-10 grid grid-cols-8 gap-y-4">
+				{tiles.map((value, key) => (
+					<div
+						ref={refs.current[key]}
+						className={`text-stone-50 text-4xl font-bold font-mono rounded sm:w-14 sm:h-14 w-12 h-12 border-4 border-purple-600 hover:border-green-100 flex justify-center items-center `}
+						onClick={(event) => selectTile(key, event)}
+						key={key}
+					>
+						{value}
+					</div>
+				))}
+			</div>
 		</div>
 	);
 };
