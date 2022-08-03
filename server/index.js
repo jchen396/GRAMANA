@@ -1,3 +1,4 @@
+const cors = require("cors");
 const express = require("express");
 const { addUser, removeUser, getUser, getUsersInRoom } = require("./users");
 const wordList = require("./anagaml-list.json");
@@ -11,6 +12,8 @@ const io = socketIo(server, {
 		origin: "purple-game.vercel.app",
 	},
 });
+
+app.use(cors());
 
 //in case server and client run on different urls
 io.on("connection", (socket) => {
