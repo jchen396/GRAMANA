@@ -1,4 +1,4 @@
 import io from "socket.io-client";
-const SERVER = "http://localhost:8080";
+const SERVER = "https://purple-game-server.herokuapp.com/";
 const socket = io(SERVER);
 export default socket;
