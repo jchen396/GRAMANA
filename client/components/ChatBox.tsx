@@ -68,7 +68,7 @@ const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 	};
 
 	return (
-		<div className="flex flex-col gap-y-10 sm:w-full md:w-1/4 sm:h-4/5 h-3/4 ">
+		<div className="flex flex-col gap-y-10 w-3/4 lg:w-1/4  sm:h-4/5 h-3/4 ">
 			<PlayerList userList={userList} userTurn={userTurn} />
 
 			<div className="relative h-4/5 bg-neutral-800 rounded-2xl flex">

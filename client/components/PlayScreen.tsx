@@ -630,23 +630,23 @@ const PlayScreen = () => {
 		socket.emit("reset");
 	};
 	return (
-		<div className=" relative m-20 sm:p-10 p-8 sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-3/4 bg-neutral-800 rounded-2xl place-content-center place-items-center">
+		<div className=" relative sm:m-20 m-10 sm:p-10 p-2 w-screen sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-2/4 bg-neutral-800 rounded-2xl place-content-center place-items-center">
 			{gameStart ? (
-				<div className="text-3xl text-stone-50 flex justify-center items-center">
+				<div className="sm:text-3xl text-xl text-stone-50 flex justify-center items-center">
 					<h1>YOUR WORD IS&nbsp;</h1>
 					<span className="text-purple-400">{word}</span>
 				</div>
 			) : (
-				<div className="text-3xl text-stone-50 flex justify-center items-center">
+				<div className="sm:text-3xl text-xl text-stone-50 flex justify-center items-center">
 					<h1>WAITING FOR PLAYER . . .</h1>
 				</div>
 			)}
 			<br />
-			<div className="m-10 grid grid-cols-8 gap-y-4">
+			<div className="sm:m-10 m-2 grid grid-cols-8 gap-y-4">
 				{tiles.map((value, key) => (
 					<div
 						ref={refs.current[key]}
-						className={`text-stone-50 text-4xl font-bold font-mono rounded sm:w-14 sm:h-14 w-12 h-12 border-4 border-purple-600 hover:border-green-100 flex justify-center items-center `}
+						className={`text-stone-50 text-4xl font-bold font-mono rounded sm:w-14 sm:h-14 w-8 h-8 border-4 border-purple-600 hover:border-green-100 flex justify-center items-center `}
 						onClick={(event) => selectTile(key, event)}
 						key={key}
 					>
