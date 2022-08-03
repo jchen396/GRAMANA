@@ -101,3 +101,7 @@ server.listen(PORT, (err) => {
 	if (err) console.log(err);
 	console.log("Server running on Port", PORT);
 });
+
+app.get("/", function (req, res) {
+	res.send("server is running");
+});
