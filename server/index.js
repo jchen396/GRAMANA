@@ -3,12 +3,12 @@ const { addUser, removeUser, getUser, getUsersInRoom } = require("./users");
 const wordList = require("./anagaml-list.json");
 const socketIo = require("socket.io");
 const http = require("http");
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
 	cors: {
-		origin: "purple-game.vercel.app",
+		origin: "*",
 		methods: ["GET", "POST"],
 	},
 });
@@ -28,7 +28,7 @@ io.on("connection", (socket) => {
 			socket.join(user.room);
 			const userList = getUsersInRoom(user.room);
 			io.to(user.room).emit("join", user.name, userList);
-			if (userList.length <= 2) {
+			if (userList.length >= 2) {
 				playerObj = {
 					[userList[0].id]: 0,
 					[userList[1].id]: 1,
@@ -69,29 +69,39 @@ io.on("connection", (socket) => {
 		const user = getUser(socket.id);
 		io.to(user.room).emit("turn", userId);
 	});
-	socket.on("result", (word, playerName, currentScore) => {
+	socket.on("result", (word, playerName, currentScore, id) => {
 		const user = getUser(socket.id);
 		user.score = currentScore;
 		const userList = getUsersInRoom(user.room);
-		io.to(user.room).emit("update", userList);
-		io.to(user.room).emit("result", word, playerName);
+		io.to(user.room).emit("result", word, playerName, id);
 	});
-	socket.on("reset", () => {
+	socket.on("reset", (winnerId) => {
 		const RANDOM_ANAGRAM_LIST =
 			wordList[Math.floor(Math.random() * wordList.length)];
 		const user = getUser(socket.id);
 		const userList = getUsersInRoom(user.room);
-		if (userList.length <= 2) {
+		if (userList[0].id === winnerId) {
+			temp = userList[1];
+			removeUser(userList[1].id);
+			addUser(temp);
+		} else {
+			temp = userList[0];
+			removeUser(userList[0].id);
+			addUser(temp);
+		}
+		const newUserList = getUsersInRoom(user.room);
+		if (newUserList.length >= 2) {
 			playerObj = {
-				[userList[0].id]: 0,
-				[userList[1].id]: 1,
+				[newUserList[0].id]: 0,
+				[newUserList[1].id]: 1,
 			};
 			io.to(user.room).emit(
 				"reset",
-				userList,
+				newUserList,
 				RANDOM_ANAGRAM_LIST,
 				playerObj
 			);
+			io.to(user.room).emit("update", newUserList);
 		}
 	});
 });

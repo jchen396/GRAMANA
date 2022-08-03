@@ -51,7 +51,7 @@ const CreateRoom = () => {
 						type="text"
 					/>
 					<button type="submit">
-						<ArrowCircleRightIcon className="m-2 w-12 h-12 bg-emerald-600 hover:bg-emerald-400 cursor-pointer rounded-full" />
+						<ArrowCircleRightIcon className="m-2 w-20 h-20 bg-emerald-600 hover:bg-emerald-400 cursor-pointer rounded-full" />
 					</button>
 				</form>
 			</div>

@@ -22,6 +22,7 @@ const PlayScreen = () => {
 	const [turn, setTurn] = useState(0);
 	const [showResult, setShowResult] = useState<boolean>(false);
 	const [winner, setWinner] = useState<string>("");
+	const [winnerId, setWinnerId] = useState<number | null>(null);
 	const [winWord, setWinWord] = useState<string>("");
 	const [currentScore, setCurrentScore] = useState<number>(0);
 	const refs = useRef<any>([...new Array(64)].map(() => React.createRef()));
@@ -37,19 +38,21 @@ const PlayScreen = () => {
 				setBoardColor({});
 				setPlayerList(userList);
 				setPlayerTurn(userList[0].id);
+				setPlayerColor("red");
 				tiles.forEach((value: any, key: any) => {
 					refs.current[key].current.classList.remove("bg-red-400");
 					refs.current[key].current.classList.remove("bg-blue-400");
 				});
-				setWord(
-					RANDOM_ANAGRAM_LIST[playerObj[socket.id]].toUpperCase()
-				);
-				setAvaialbleLetters(
-					RANDOM_ANAGRAM_LIST[playerObj[socket.id]]
-						.toUpperCase()
-						.split("")
-				);
-
+				if (playerObj.hasOwnProperty(socket.id)) {
+					setWord(
+						RANDOM_ANAGRAM_LIST[playerObj[socket.id]].toUpperCase()
+					);
+					setAvaialbleLetters(
+						RANDOM_ANAGRAM_LIST[playerObj[socket.id]]
+							.toUpperCase()
+							.split("")
+					);
+				}
 				socket.emit("turn", userList[0].id);
 			}
 		);
@@ -59,15 +62,17 @@ const PlayScreen = () => {
 				setGameStart(true);
 				setPlayerList(userList);
 				setPlayerTurn(userList[0].id);
-				setPlayerName(userList[playerObj[socket.id]].name);
-				setWord(
-					RANDOM_ANAGRAM_LIST[playerObj[socket.id]].toUpperCase()
-				);
-				setAvaialbleLetters(
-					RANDOM_ANAGRAM_LIST[playerObj[socket.id]]
-						.toUpperCase()
-						.split("")
-				);
+				if (playerObj.hasOwnProperty(socket.id)) {
+					setPlayerName(userList[playerObj[socket.id]].name);
+					setWord(
+						RANDOM_ANAGRAM_LIST[playerObj[socket.id]].toUpperCase()
+					);
+					setAvaialbleLetters(
+						RANDOM_ANAGRAM_LIST[playerObj[socket.id]]
+							.toUpperCase()
+							.split("")
+					);
+				}
 				socket.emit("turn", userList[0].id);
 			}
 		);
@@ -96,11 +101,15 @@ const PlayScreen = () => {
 				socket.emit("turn", userList[0].id);
 			}
 		});
-		socket.on("result", (wordResult: string, nameResult: string) => {
-			setShowResult(true);
-			setWinner(nameResult);
-			setWinWord(wordResult);
-		});
+		socket.on(
+			"result",
+			(wordResult: string, nameResult: string, idResult: number) => {
+				setShowResult(true);
+				setWinnerId(idResult);
+				setWinner(nameResult);
+				setWinWord(wordResult);
+			}
+		);
 		return () => {
 			socket.off("start");
 			socket.off("play");
@@ -565,7 +574,7 @@ const PlayScreen = () => {
 		checkDownRight();
 		//check game status
 		if (isWin) {
-			socket.emit("result", word, playerName, currentScore);
+			socket.emit("result", word, playerName, currentScore, socket.id);
 		}
 	}, [selectedIndex, tiles, isWin, playerColor]);
 	//Emitting socket.io event after every valid input && pass new Color
@@ -580,6 +589,7 @@ const PlayScreen = () => {
 	}, [turn]);
 	//This function will be invoked whenever a tile is clicked
 	const selectTile = (key: number, divEvent: any) => {
+		console.log(playerList);
 		if (gameStart && playerTurn == socket.id && showResult === false) {
 			// This function will read the keyboard and input character if it is part of the word
 			const inputTile = (keyPressEvent: any) => {
@@ -627,14 +637,20 @@ const PlayScreen = () => {
 		}
 	};
 	const resetHandler = () => {
-		socket.emit("reset");
+		socket.emit("reset", winnerId);
 	};
 	return (
 		<div className=" relative sm:m-20 m-10 sm:p-10 p-2 w-screen sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-2/4 bg-neutral-800 rounded-2xl place-content-center place-items-center">
-			{gameStart ? (
+			{(gameStart && playerList[0].id === socket.id) ||
+			(gameStart && playerList[1].id === socket.id) ? (
 				<div className="sm:text-3xl text-xl text-stone-50 flex justify-center items-center">
 					<h1>YOUR WORD IS&nbsp;</h1>
 					<span className="text-purple-400">{word}</span>
+				</div>
+			) : (gameStart && playerList[0].id !== socket.id) ||
+			  (gameStart && playerList[1].id === socket.id) ? (
+				<div className="sm:text-3xl text-xl text-stone-50 flex justify-center items-center">
+					<h1>SPECTATING</h1>
 				</div>
 			) : (
 				<div className="sm:text-3xl text-xl text-stone-50 flex justify-center items-center">

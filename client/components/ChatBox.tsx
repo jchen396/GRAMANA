@@ -45,6 +45,7 @@ const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 			setUserTurn(userId);
 		});
 		socket.on("update", (newUserList) => {
+			console.log("updating...");
 			setUserList(newUserList);
 		});
 		return () => {
