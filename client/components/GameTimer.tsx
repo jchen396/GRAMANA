@@ -1,15 +1,29 @@
+import { SkipNextRounded } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import socket from "./Socket";
 
 interface Props {
 	gameStart: boolean;
+	playerTurn: string;
+	socketId: string;
+	playerColor: string;
 }
 
-const GameTimer: React.FC<Props> = ({ gameStart }) => {
+const GameTimer: React.FC<Props> = ({
+	gameStart,
+	playerTurn,
+	socketId,
+	playerColor,
+}) => {
 	const [timer, setTimer] = useState<number>(10);
 	useEffect(() => {
 		socket.on("timer", (timerCounter) => {
 			setTimer(timerCounter);
+			if (timerCounter === 0) {
+				if (socketId === playerTurn) {
+					socket.emit("skipTurn", playerColor);
+				}
+			}
 		});
 	});
 	return (

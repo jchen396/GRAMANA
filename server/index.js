@@ -15,7 +15,12 @@ const io = socketIo(server, {
 
 //in case server and client run on different urls
 io.on("connection", (socket) => {
-	let timerCounter = 10;
+	let timerCounter;
+	const turnCounter = setInterval(() => {
+		const user = getUser(socket.id);
+		timerCounter--;
+		io.to(user?.room).emit("timer", timerCounter);
+	}, 1000);
 	socket.on("join", (roomCode, userName) => {
 		try {
 			const RANDOM_ANAGRAM_LIST =
@@ -30,6 +35,7 @@ io.on("connection", (socket) => {
 			const userList = getUsersInRoom(user.room);
 			io.to(user.room).emit("join", user.name, userList);
 			if (userList.length >= 2) {
+				timerCounter = 10;
 				playerObj = {
 					[userList[0].id]: 0,
 					[userList[1].id]: 1,
@@ -53,6 +59,7 @@ io.on("connection", (socket) => {
 	});
 	socket.on("play", (tiles, boardColor, playerColor) => {
 		try {
+			timerCounter = 10;
 			const user = getUser(socket.id);
 			const userList = getUsersInRoom(user.room);
 			socket.broadcast
@@ -106,17 +113,10 @@ io.on("connection", (socket) => {
 			io.to(user.room).emit("update", newUserList);
 		}
 	});
-	socket.on("timer", (color) => {
+	socket.on("skipTurn", (color) => {
 		const user = getUser(socket.id);
 		const userList = getUsersInRoom(user.room);
-		const turnCounter = setInterval(() => {
-			timerCounter--;
-			io.to(user.room).emit("timer", timerCounter);
-			if (timerCounter === 0) {
-				clearInterval(turnCounter);
-				io.to(user.room).emit("skipTurn", userList, color);
-			}
-		}, 1000);
+		io.to(user.room).emit("skipTurn", userList, color);
 	});
 });
 server.listen(PORT, (err) => {

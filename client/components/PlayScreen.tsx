@@ -99,12 +99,10 @@ const PlayScreen = () => {
 				setPlayerColor("blue");
 				setPlayerTurn(userList[1].id);
 				socket.emit("turn", userList[1].id);
-				socket.emit("timer", "blue");
 			} else {
 				setPlayerColor("red");
 				setPlayerTurn(userList[0].id);
 				socket.emit("turn", userList[0].id);
-				socket.emit("timer", "red");
 			}
 		});
 		socket.on(
@@ -121,12 +119,10 @@ const PlayScreen = () => {
 				setPlayerColor("blue");
 				setPlayerTurn(userList[1].id);
 				socket.emit("turn", userList[1].id);
-				socket.emit("timer", "blue");
 			} else {
 				setPlayerColor("red");
 				setPlayerTurn(userList[0].id);
 				socket.emit("turn", userList[0].id);
-				socket.emit("timer", "red");
 			}
 		});
 		return () => {
@@ -610,7 +606,6 @@ const PlayScreen = () => {
 	}, [turn]);
 	//This function will be invoked whenever a tile is clicked
 	const selectTile = (key: number, divEvent: any) => {
-		console.log(playerList);
 		if (gameStart && playerTurn == socket.id && showResult === false) {
 			// This function will read the keyboard and input character if it is part of the word
 			const inputTile = (keyPressEvent: any) => {
@@ -669,7 +664,12 @@ const PlayScreen = () => {
 					gameStart={gameStart}
 					word={word}
 				/>
-				<GameTimer gameStart={gameStart} />
+				<GameTimer
+					gameStart={gameStart}
+					playerTurn={playerTurn}
+					socketId={socket.id}
+					playerColor={playerColor}
+				/>
 			</div>
 			<br />
 			<div className="sm:m-10 m-2 grid grid-cols-8 gap-y-4">
