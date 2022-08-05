@@ -19,7 +19,8 @@ io.on("connection", (socket) => {
 	const turnCounter = setInterval(() => {
 		const user = getUser(socket.id);
 		timerCounter--;
-		io.to(user?.room).emit("timer", timerCounter);
+		if (!isNaN(timerCounter) && timerCounter >= 0)
+			io.to(user?.room).emit("timer", timerCounter);
 	}, 1000);
 	socket.on("join", (roomCode, userName) => {
 		try {
@@ -35,17 +36,20 @@ io.on("connection", (socket) => {
 			const userList = getUsersInRoom(user.room);
 			io.to(user.room).emit("join", user.name, userList);
 			if (userList.length >= 2) {
-				timerCounter = 10;
-				playerObj = {
-					[userList[0].id]: 0,
-					[userList[1].id]: 1,
-				};
-				io.to(user.room).emit(
-					"start",
-					userList,
-					RANDOM_ANAGRAM_LIST,
-					playerObj
-				);
+				io.to(user.room).emit("validate", userList);
+				if (userList.length === 2) {
+					timerCounter = 10;
+					playerObj = {
+						[userList[0].id]: 0,
+						[userList[1].id]: 1,
+					};
+					io.to(user.room).emit(
+						"start",
+						userList,
+						RANDOM_ANAGRAM_LIST,
+						playerObj
+					);
+				}
 			}
 		} catch {}
 	});
@@ -59,12 +63,12 @@ io.on("connection", (socket) => {
 	});
 	socket.on("play", (tiles, boardColor, playerColor) => {
 		try {
-			timerCounter = 10;
 			const user = getUser(socket.id);
 			const userList = getUsersInRoom(user.room);
 			socket.broadcast
 				.to(user.room)
 				.emit("play", tiles, boardColor, playerColor, userList);
+			timerCounter = 10;
 		} catch {}
 	});
 	socket.on("message", (message) => {

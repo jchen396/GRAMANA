@@ -59,11 +59,13 @@ const PlayScreen = () => {
 				socket.emit("turn", userList[0].id);
 			}
 		);
+		socket.on("validate", (userList) => {
+			setGameStart(true);
+			setPlayerList(userList);
+		});
 		socket.on(
 			"start",
 			(userList, RANDOM_ANAGRAM_LIST: string[], playerObj) => {
-				setGameStart(true);
-				setPlayerList(userList);
 				setPlayerTurn(userList[0].id);
 				if (playerObj.hasOwnProperty(socket.id)) {
 					setPlayerName(userList[playerObj[socket.id]].name);
