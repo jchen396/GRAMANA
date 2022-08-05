@@ -1,5 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
+import GameHeader from "./GameHeader";
+import Result from "./Result";
 import socket from "./Socket";
+import GameTimer from "./GameTimer";
 const PlayScreen = () => {
 	let initialArr: string[] = [];
 
@@ -74,6 +77,7 @@ const PlayScreen = () => {
 					);
 				}
 				socket.emit("turn", userList[0].id);
+				socket.emit("timer", "red");
 			}
 		);
 		socket.on("play", (grid, board, color, userList) => {
@@ -95,10 +99,12 @@ const PlayScreen = () => {
 				setPlayerColor("blue");
 				setPlayerTurn(userList[1].id);
 				socket.emit("turn", userList[1].id);
+				socket.emit("timer", "blue");
 			} else {
 				setPlayerColor("red");
 				setPlayerTurn(userList[0].id);
 				socket.emit("turn", userList[0].id);
+				socket.emit("timer", "red");
 			}
 		});
 		socket.on(
@@ -110,10 +116,25 @@ const PlayScreen = () => {
 				setWinWord(wordResult);
 			}
 		);
+		socket.on("skipTurn", (userList: any, color: string) => {
+			if (color == "red") {
+				setPlayerColor("blue");
+				setPlayerTurn(userList[1].id);
+				socket.emit("turn", userList[1].id);
+				socket.emit("timer", "blue");
+			} else {
+				setPlayerColor("red");
+				setPlayerTurn(userList[0].id);
+				socket.emit("turn", userList[0].id);
+				socket.emit("timer", "red");
+			}
+		});
 		return () => {
 			socket.off("start");
+			socket.off("reset");
 			socket.off("play");
 			socket.off("result");
+			socket.off("skipTurn");
 		};
 	}, []);
 	useEffect(() => {
@@ -641,22 +662,15 @@ const PlayScreen = () => {
 	};
 	return (
 		<div className=" relative sm:m-20 m-10 sm:p-10 p-2 w-screen sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-2/4 bg-neutral-800 rounded-2xl place-content-center place-items-center">
-			{(gameStart && playerList[0].id === socket.id) ||
-			(gameStart && playerList[1].id === socket.id) ? (
-				<div className="sm:text-3xl text-xl text-stone-50 flex justify-center items-center">
-					<h1>YOUR WORD IS&nbsp;</h1>
-					<span className="text-purple-400">{word}</span>
-				</div>
-			) : (gameStart && playerList[0].id !== socket.id) ||
-			  (gameStart && playerList[1].id === socket.id) ? (
-				<div className="sm:text-3xl text-xl text-stone-50 flex justify-center items-center">
-					<h1>SPECTATING</h1>
-				</div>
-			) : (
-				<div className="sm:text-3xl text-xl text-stone-50 flex justify-center items-center">
-					<h1>WAITING FOR PLAYER . . .</h1>
-				</div>
-			)}
+			<div className=" ">
+				<GameHeader
+					socketId={socket.id}
+					playerList={playerList}
+					gameStart={gameStart}
+					word={word}
+				/>
+				<GameTimer gameStart={gameStart} />
+			</div>
 			<br />
 			<div className="sm:m-10 m-2 grid grid-cols-8 gap-y-4">
 				{tiles.map((value, key) => (
@@ -669,21 +683,13 @@ const PlayScreen = () => {
 						{value}
 					</div>
 				))}
+				<Result
+					showResult={showResult}
+					winner={winner}
+					winWord={winWord}
+					resetHandler={resetHandler}
+				/>
 			</div>
-			{showResult ? (
-				<div className="absolute inset-1/4 w-1/2 h-1/4 bg-neutral-700 rounded-2xl flex flex-col justify-center items-center gap-y-6">
-					<h1 className="text-stone-50 text-2xl">
-						{winner} has won with the word{" "}
-						<span className="text-purple-400">{winWord}</span>
-					</h1>
-					<button
-						onClick={() => resetHandler()}
-						className="w-1/3 h-1/5 bg-emerald-600 hover:bg-emerald-400 rounded-full"
-					>
-						Play again
-					</button>
-				</div>
-			) : null}
 		</div>
 	);
 };

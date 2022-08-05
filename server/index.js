@@ -15,6 +15,7 @@ const io = socketIo(server, {
 
 //in case server and client run on different urls
 io.on("connection", (socket) => {
+	let timerCounter = 10;
 	socket.on("join", (roomCode, userName) => {
 		try {
 			const RANDOM_ANAGRAM_LIST =
@@ -66,6 +67,7 @@ io.on("connection", (socket) => {
 		} catch {}
 	});
 	socket.on("turn", (userId) => {
+		timerCounter = 10;
 		const user = getUser(socket.id);
 		io.to(user.room).emit("turn", userId);
 	});
@@ -103,6 +105,18 @@ io.on("connection", (socket) => {
 			);
 			io.to(user.room).emit("update", newUserList);
 		}
+	});
+	socket.on("timer", (color) => {
+		const user = getUser(socket.id);
+		const userList = getUsersInRoom(user.room);
+		const turnCounter = setInterval(() => {
+			timerCounter--;
+			io.to(user.room).emit("timer", timerCounter);
+			if (timerCounter === 0) {
+				clearInterval(turnCounter);
+				io.to(user.room).emit("skipTurn", userList, color);
+			}
+		}, 1000);
 	});
 });
 server.listen(PORT, (err) => {
