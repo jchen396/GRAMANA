@@ -16,11 +16,12 @@ const io = socketIo(server, {
 //in case server and client run on different urls
 io.on("connection", (socket) => {
 	let timerCounter;
-	const turnCounter = setInterval(() => {
+	setInterval(() => {
 		const user = getUser(socket.id);
-		timerCounter--;
-		if (!isNaN(timerCounter) && timerCounter >= 0)
+		if (!isNaN(timerCounter) && timerCounter >= 0) {
 			io.to(user?.room).emit("timer", timerCounter);
+		}
+		timerCounter--;
 	}, 1000);
 	socket.on("join", (roomCode, userName) => {
 		try {
@@ -38,7 +39,7 @@ io.on("connection", (socket) => {
 			if (userList.length >= 2) {
 				io.to(user.room).emit("validate", userList);
 				if (userList.length === 2) {
-					timerCounter = 10;
+					timerCounter = 15;
 					playerObj = {
 						[userList[0].id]: 0,
 						[userList[1].id]: 1,
@@ -68,7 +69,7 @@ io.on("connection", (socket) => {
 			socket.broadcast
 				.to(user.room)
 				.emit("play", tiles, boardColor, playerColor, userList);
-			timerCounter = 10;
+			timerCounter = 15;
 		} catch {}
 	});
 	socket.on("message", (message) => {
@@ -78,7 +79,7 @@ io.on("connection", (socket) => {
 		} catch {}
 	});
 	socket.on("turn", (userId) => {
-		timerCounter = 10;
+		timerCounter = 15;
 		const user = getUser(socket.id);
 		io.to(user.room).emit("turn", userId);
 	});

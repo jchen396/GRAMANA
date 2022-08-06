@@ -669,7 +669,6 @@ const PlayScreen = () => {
 				<GameTimer
 					gameStart={gameStart}
 					playerTurn={playerTurn}
-					socketId={socket.id}
 					playerColor={playerColor}
 				/>
 			</div>
