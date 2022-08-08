@@ -685,6 +685,7 @@ const PlayScreen = () => {
 					</div>
 				))}
 				<Result
+					playerName={playerName}
 					showResult={showResult}
 					winner={winner}
 					winWord={winWord}

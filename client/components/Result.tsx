@@ -5,6 +5,7 @@ interface Props {
 	winner: string;
 	winWord: string;
 	resetHandler: Function;
+	playerName: string;
 }
 
 const Result: React.FC<Props> = ({
@@ -12,11 +13,12 @@ const Result: React.FC<Props> = ({
 	winner,
 	winWord,
 	resetHandler,
+	playerName,
 }) => {
 	return (
 		<>
 			{" "}
-			{showResult ? (
+			{showResult && playerName === winner ? (
 				<div className="absolute inset-1/4 w-1/2 h-1/4 bg-neutral-700 rounded-2xl flex flex-col justify-center items-center gap-y-6">
 					<h1 className="text-stone-50 text-2xl">
 						{winner} has won with the word{" "}
@@ -28,6 +30,14 @@ const Result: React.FC<Props> = ({
 					>
 						Play again
 					</button>
+				</div>
+			) : showResult && playerName !== winner ? (
+				<div className="absolute inset-1/4 w-1/2 h-1/4 bg-neutral-700 rounded-2xl flex flex-col justify-center items-center gap-y-6">
+					<h1 className="text-stone-50 text-2xl">
+						{winner} has won with the word{" "}
+						<span className="text-purple-400">{winWord}</span>
+					</h1>
+					<p>Waiting for {winner} to pick a new word . . .</p>
 				</div>
 			) : null}
 		</>
