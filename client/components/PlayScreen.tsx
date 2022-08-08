@@ -27,38 +27,32 @@ const PlayScreen = () => {
 	const [winner, setWinner] = useState<string>("");
 	const [winnerId, setWinnerId] = useState<number | null>(null);
 	const [winWord, setWinWord] = useState<string>("");
+	const [wordOptions, setWordOptions] = useState<string[]>([]);
 	const [currentScore, setCurrentScore] = useState<number>(0);
 	const refs = useRef<any>([...new Array(64)].map(() => React.createRef()));
 	useEffect(() => {
-		socket.on(
-			"reset",
-			(userList, RANDOM_ANAGRAM_LIST: string[], playerObj) => {
-				setShowResult(false);
-				setIsWin(false);
-				setTiles(initialArr);
-				setWinner("");
-				setWinWord("");
-				setBoardColor({});
-				setPlayerList(userList);
-				setPlayerTurn(userList[0].id);
-				setPlayerColor("red");
-				tiles.forEach((value: any, key: any) => {
-					refs.current[key].current.classList.remove("bg-red-400");
-					refs.current[key].current.classList.remove("bg-blue-400");
-				});
-				if (playerObj.hasOwnProperty(socket.id)) {
-					setWord(
-						RANDOM_ANAGRAM_LIST[playerObj[socket.id]].toUpperCase()
-					);
-					setAvaialbleLetters(
-						RANDOM_ANAGRAM_LIST[playerObj[socket.id]]
-							.toUpperCase()
-							.split("")
-					);
-				}
-				socket.emit("turn", userList[0].id);
+		socket.on("reset", (userList, newNextWord, playerObj) => {
+			setShowResult(false);
+			setIsWin(false);
+			setTiles(initialArr);
+			setWinner("");
+			setWinWord("");
+			setBoardColor({});
+			setPlayerList(userList);
+			setPlayerTurn(userList[0].id);
+			setPlayerColor("red");
+			tiles.forEach((value: any, key: any) => {
+				refs.current[key].current.classList.remove("bg-red-400");
+				refs.current[key].current.classList.remove("bg-blue-400");
+			});
+			if (playerObj.hasOwnProperty(socket.id)) {
+				setWord(newNextWord[playerObj[socket.id]].toUpperCase());
+				setAvaialbleLetters(
+					newNextWord[playerObj[socket.id]].toUpperCase().split("")
+				);
 			}
-		);
+			socket.emit("turn", userList[0].id);
+		});
 		socket.on("validate", (userList) => {
 			setGameStart(true);
 			setPlayerList(userList);
@@ -109,11 +103,17 @@ const PlayScreen = () => {
 		});
 		socket.on(
 			"result",
-			(wordResult: string, nameResult: string, idResult: number) => {
+			(
+				wordResult: string,
+				nameResult: string,
+				idResult: number,
+				randomWordList: string[]
+			) => {
 				setShowResult(true);
 				setWinnerId(idResult);
 				setWinner(nameResult);
 				setWinWord(wordResult);
+				setWordOptions(randomWordList);
 			}
 		);
 		socket.on("skipTurn", (userList: any, color: string) => {
@@ -654,8 +654,9 @@ const PlayScreen = () => {
 			}
 		}
 	};
-	const resetHandler = () => {
-		socket.emit("reset", winnerId);
+	const resetHandler = (e: any) => {
+		let nextWord = e.target.textContent;
+		socket.emit("reset", winnerId, nextWord);
 	};
 	return (
 		<div className=" relative sm:m-20 m-10 sm:p-10 p-2 w-screen sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-2/4 bg-neutral-800 rounded-2xl place-content-center place-items-center">
@@ -689,6 +690,7 @@ const PlayScreen = () => {
 					showResult={showResult}
 					winner={winner}
 					winWord={winWord}
+					wordOptions={wordOptions}
 					resetHandler={resetHandler}
 				/>
 			</div>

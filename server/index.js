@@ -1,6 +1,7 @@
 const express = require("express");
 const { addUser, removeUser, getUser, getUsersInRoom } = require("./users");
-const wordList = require("./anagaml-list.json");
+const wordList = require("./anagram-list.json");
+const wordListSearch = require("./anagram-list-search.json");
 const socketIo = require("socket.io");
 const http = require("http");
 const PORT = process.env.PORT || 8080;
@@ -84,14 +85,25 @@ io.on("connection", (socket) => {
 		io.to(user.room).emit("turn", userId);
 	});
 	socket.on("result", (word, playerName, currentScore, id) => {
+		let randomAnagramList = [];
+		for (let i = 0; i < 3; i++) {
+			randomAnagramList[i] =
+				wordList[Math.floor(Math.random() * wordList.length)];
+		}
 		const user = getUser(socket.id);
 		user.score = currentScore;
 		const userList = getUsersInRoom(user.room);
-		io.to(user.room).emit("result", word, playerName, id);
+		io.to(user.room).emit(
+			"result",
+			word,
+			playerName,
+			id,
+			randomAnagramList
+		);
 	});
-	socket.on("reset", (winnerId) => {
-		const RANDOM_ANAGRAM_LIST =
-			wordList[Math.floor(Math.random() * wordList.length)];
+	socket.on("reset", (winnerId, nextWord) => {
+		let nextWordIndex = wordListSearch[nextWord.toLowerCase()];
+		let newNextWord = wordList[nextWordIndex];
 		const user = getUser(socket.id);
 		const userList = getUsersInRoom(user.room);
 		if (userList[0].id === winnerId) {
@@ -109,12 +121,7 @@ io.on("connection", (socket) => {
 				[newUserList[0].id]: 0,
 				[newUserList[1].id]: 1,
 			};
-			io.to(user.room).emit(
-				"reset",
-				newUserList,
-				RANDOM_ANAGRAM_LIST,
-				playerObj
-			);
+			io.to(user.room).emit("reset", newUserList, newNextWord, playerObj);
 			io.to(user.room).emit("update", newUserList);
 		}
 	});
