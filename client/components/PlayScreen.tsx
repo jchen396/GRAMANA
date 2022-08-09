@@ -30,6 +30,7 @@ const PlayScreen = () => {
 	const [wordOptions, setWordOptions] = useState<string[]>([]);
 	const [currentScore, setCurrentScore] = useState<number>(0);
 	const refs = useRef<any>([...new Array(64)].map(() => React.createRef()));
+
 	useEffect(() => {
 		socket.on("reset", (userList, newNextWord, playerObj) => {
 			setShowResult(false);
@@ -671,6 +672,11 @@ const PlayScreen = () => {
 					gameStart={gameStart}
 					playerTurn={playerTurn}
 					playerColor={playerColor}
+					winner={winner}
+					winnerId={winnerId}
+					playerName={playerName}
+					showResult={showResult}
+					wordOptions={wordOptions}
 				/>
 			</div>
 			<br />
