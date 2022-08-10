@@ -28,7 +28,7 @@ const GameTimer: React.FC<Props> = ({
 			setTimer(timerCounter);
 			if (timerCounter === 0 && socket.id === playerTurn) {
 				socket.emit("skipTurn", playerColor);
-				if (showResult && playerName === winner) {
+				if (showResult) {
 					const nextWord =
 						wordOptions[Math.floor(Math.random() * 3)][0];
 					socket.emit("reset", winnerId, nextWord);
