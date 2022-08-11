@@ -130,6 +130,19 @@ io.on("connection", (socket) => {
 		const userList = getUsersInRoom(user.room);
 		io.to(user.room).emit("skipTurn", userList, color);
 	});
+	socket.on("filled", () => {
+		const user = getUser(socket.id);
+		const userList = getUsersInRoom(user?.room);
+		let newNextWord = wordList[Math.floor(Math.random() * wordList.length)];
+		if (userList.length >= 2) {
+			playerObj = {
+				[userList[0].id]: 0,
+				[userList[1].id]: 1,
+			};
+			io.to(user.room).emit("reset", userList, newNextWord, playerObj);
+			io.to(user.room).emit("update", userList);
+		}
+	});
 });
 server.listen(PORT, (err) => {
 	if (err) console.log(err);

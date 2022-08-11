@@ -29,10 +29,12 @@ const PlayScreen = () => {
 	const [winWord, setWinWord] = useState<string>("");
 	const [wordOptions, setWordOptions] = useState<string[]>([]);
 	const [currentScore, setCurrentScore] = useState<number>(0);
+	const [isFilled, setIsFilled] = useState<boolean>(false);
 	const refs = useRef<any>([...new Array(64)].map(() => React.createRef()));
 
 	useEffect(() => {
 		socket.on("reset", (userList, newNextWord, playerObj) => {
+			setIsFilled(false);
 			setShowResult(false);
 			setIsWin(false);
 			setTiles(initialArr);
@@ -78,6 +80,7 @@ const PlayScreen = () => {
 			}
 		);
 		socket.on("play", (grid, board, color, userList) => {
+			let checkFilled = true;
 			setTiles(grid);
 			setBoardColor({ ...boardColor, ...board });
 			grid.forEach((value: any, key: number) => {
@@ -90,6 +93,7 @@ const PlayScreen = () => {
 				} else {
 					refs.current[key]?.current.classList.remove(`bg-blue-400`);
 					refs.current[key]?.current.classList.remove(`bg-red-400`);
+					checkFilled = false;
 				}
 			});
 			if (color === "red") {
@@ -100,6 +104,10 @@ const PlayScreen = () => {
 				setPlayerColor("red");
 				setPlayerTurn(userList[0].id);
 				socket.emit("turn", userList[0].id);
+			}
+			if (checkFilled === true) {
+				setIsFilled(checkFilled);
+				setShowResult(true);
 			}
 		});
 		socket.on(
@@ -659,6 +667,9 @@ const PlayScreen = () => {
 		let nextWord = e.target.textContent;
 		socket.emit("reset", winnerId, nextWord);
 	};
+	const filledHandler = () => {
+		socket.emit("filled");
+	};
 	return (
 		<div className=" relative sm:m-20 m-10 sm:p-10 p-2 w-screen sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-2/4 bg-neutral-800 rounded-2xl place-content-center place-items-center">
 			<div className=" ">
@@ -698,6 +709,8 @@ const PlayScreen = () => {
 					winWord={winWord}
 					wordOptions={wordOptions}
 					resetHandler={resetHandler}
+					isFilled={isFilled}
+					filledHandler={filledHandler}
 				/>
 			</div>
 		</div>
