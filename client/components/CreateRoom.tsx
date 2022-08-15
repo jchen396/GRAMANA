@@ -23,7 +23,7 @@ const CreateRoom = () => {
 		<div className="flex flex-col justify-center items-center gap-y-10">
 			<div>
 				<h1 className="text-4xl text-stone-50 p-10 bg-purple-400 rounded-full">
-					LOGO
+					GRAMANA
 				</h1>
 			</div>
 			<div className="p-16 bg-neutral-800 rounded-2xl flex flex-col justify-center items-center">
