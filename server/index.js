@@ -4,7 +4,6 @@ const wordList = require("./anagram-list.json");
 const wordListSearch = require("./anagram-list-search.json");
 const socketIo = require("socket.io");
 const http = require("http");
-const PORT = process.env.PORT || 8080;
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -144,7 +143,7 @@ io.on("connection", (socket) => {
 		}
 	});
 });
-server.listen(PORT, (err) => {
+server.listen(process.env.PORT || 5000, (err) => {
 	if (err) console.log(err);
 	console.log("Server running on Port", PORT);
 });
