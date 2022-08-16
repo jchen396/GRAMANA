@@ -22,7 +22,7 @@ const CreateRoom = () => {
 	return (
 		<div className="flex flex-col justify-center items-center gap-y-10">
 			<div>
-				<h1 className="text-5xl font-mono tracking-widest text-stone-50 p-10 bg-purple-400 rounded-full">
+				<h1 className="text-5xl font-mono tracking-widest text-stone-900 p-10 bg-purple-400 rounded-full">
 					GRAMANA
 				</h1>
 			</div>
@@ -32,19 +32,27 @@ const CreateRoom = () => {
 					onSubmit={(e) => enterRoomHandler(e)}
 					className="flex flex-col justify-center items-center"
 				>
-					<label className="m-2 text-stone-50 text-4xl">
+					<label
+						htmlFor="nameInput"
+						className="m-2 text-stone-50 text-4xl"
+					>
 						Player Name:
 					</label>
 					<input
+						id="nameInput"
 						required
 						onChange={(e) => userTextHandler(e)}
 						className="m-4 text-2xl text-center text-medium uppercase rounded p-2 bg-stone-900 text-stone-50"
 						type="text"
 					/>
-					<label className="m-2 text-stone-50 text-4xl">
+					<label
+						htmlFor="roomInput"
+						className="m-2 text-stone-50 text-4xl"
+					>
 						Room Code:
 					</label>
 					<input
+						id="roomInput"
 						required
 						onChange={(e) => roomTextHandler(e)}
 						className="m-4 text-2xl text-center text-medium uppercase rounded p-2 bg-stone-900 text-stone-50"
@@ -55,6 +63,7 @@ const CreateRoom = () => {
 							sx={{ fontSize: 75 }}
 							className="m-2 bg-emerald-600 hover:bg-emerald-400 cursor-pointer rounded-full"
 						/>
+						<span className="hidden">Join</span>
 					</button>
 				</form>
 			</div>
