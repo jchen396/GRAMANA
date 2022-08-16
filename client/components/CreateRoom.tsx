@@ -22,7 +22,7 @@ const CreateRoom = () => {
 	return (
 		<div className="flex flex-col justify-center items-center gap-y-10">
 			<div>
-				<h1 className="text-4xl text-stone-50 p-10 bg-purple-400 rounded-full">
+				<h1 className="text-5xl font-mono tracking-widest text-stone-50 p-10 bg-purple-400 rounded-full">
 					GRAMANA
 				</h1>
 			</div>
@@ -51,7 +51,10 @@ const CreateRoom = () => {
 						type="text"
 					/>
 					<button type="submit">
-						<ArrowCircleRightIcon className="m-2 w-20 h-20 bg-emerald-600 hover:bg-emerald-400 cursor-pointer rounded-full" />
+						<ArrowCircleRightIcon
+							sx={{ fontSize: 75 }}
+							className="m-2 bg-emerald-600 hover:bg-emerald-400 cursor-pointer rounded-full"
+						/>
 					</button>
 				</form>
 			</div>
