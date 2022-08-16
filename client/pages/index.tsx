@@ -20,7 +20,7 @@ const Home: NextPage = () => {
 					name="description"
 					content="GRAMANA is a free multiplayer word game. Enter a username and create a room to challenge your friends by connecting the letters to build your word!"
 				/>
-				<link rel="shortcut icon" href="/favicon.ico" />
+				<link rel="shortcut icon" href="images/favicon.ico" />
 			</Head>
 			<div className="w-screen h-screen bg-neutral-900 flex flex-wrap items-center justify-center space-x-20">
 				<CreateRoom />

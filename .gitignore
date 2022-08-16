@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+/client/node_modules
+/server/node_modules
+/client/.pnp
 /.pnp
 .pnp.js
 
@@ -9,6 +12,7 @@
 /coverage
 
 # next.js
+/client/.next/
 /.next/
 /out/
 
@@ -26,6 +30,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
+/server/.env*.local
+/client/.env*.local
 .env*.local
 
 # vercel

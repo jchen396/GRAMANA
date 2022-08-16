@@ -145,9 +145,10 @@ const PlayScreen = () => {
 		};
 	}, []);
 	useEffect(() => {
-		// CHECK LEFT TO RIGHT
-		const checkLeftRight = () => {
-			if (isWin === false) {
+		let checkWin = false;
+		// Function for checking tiles in all directions
+		const checkDirection = (prevTile: number, nextTile: number): void => {
+			if (checkWin === false) {
 				let rightCharacters =
 					availableLetters.length -
 					1 -
@@ -159,80 +160,13 @@ const PlayScreen = () => {
 				let leftCheck = false;
 				if (rightCharacters === 0) rightCheck = true;
 				else {
-					for (let i = 1; i < rightCharacters + 1; i++) {
-						//check right side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) + i
-							] === tiles[selectedIndex + i]
-						) {
-							if (i === rightCharacters) {
-								rightCheck = true;
-							}
-							continue;
-						} else break;
-						rightCheck = true;
-					}
-				}
-				if (leftCharacters === 0) leftCheck = true;
-				else {
-					for (let i = 1; i < leftCharacters + 1; i++) {
-						//check left side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) -
-									i
-							] === tiles[selectedIndex - i] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) - i
-							] === tiles[selectedIndex - i]
-						) {
-							if (i === leftCharacters || leftCharacters === 0) {
-								leftCheck = true;
-							}
-							continue;
-						} else break;
-					}
-				}
-				if (rightCheck && leftCheck) {
-					setIsWin(true);
-					setCurrentScore((prevState) => prevState + 1);
-				}
-			}
-		};
-		//CHECK RIGHT TO LEFT
-		const checkRightLeft = () => {
-			if (isWin === false) {
-				let rightCharacters =
-					availableLetters.length -
-					1 -
-					availableLetters.indexOf(tiles[selectedIndex]);
-				let leftCharacters = availableLetters.indexOf(
-					tiles[selectedIndex]
-				);
-				let rightCheck = false;
-				let leftCheck = false;
-				if (rightCharacters === 0) rightCheck = true;
-				else {
-					for (let i = 1; i < rightCharacters + 1; i++) {
+					for (let i = 1; i < rightCharacters; i++) {
 						//check right side of availableLetters array
 						if (
 							availableLetters[
 								availableLetters.indexOf(tiles[selectedIndex]) +
 									i
-							] === tiles[selectedIndex - i] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) + i
-							] === tiles[selectedIndex - i]
+							] === tiles[selectedIndex + i * nextTile]
 						) {
 							if (i === rightCharacters) {
 								rightCheck = true;
@@ -243,431 +177,99 @@ const PlayScreen = () => {
 					}
 				}
 				if (leftCharacters === 0) leftCheck = true;
-				else {
+				for (let i = 1; i < leftCharacters + 1; i++) {
+					//check left side of availableLetters array
+					if (
+						availableLetters[
+							availableLetters.indexOf(tiles[selectedIndex]) - i
+						] === tiles[selectedIndex + i * prevTile]
+					) {
+						if (i === leftCharacters) {
+							leftCheck = true;
+						}
+						continue;
+					} else break;
+				}
+				if (rightCheck && leftCheck) {
+					checkWin = true;
+					setIsWin(true);
+					setCurrentScore((prevState) => prevState + 1);
+					return;
+				}
+				if (availableLetters.indexOf(tiles[selectedIndex], 2) !== -1) {
+					let rightCharacters =
+						availableLetters.length -
+						1 -
+						availableLetters.indexOf(tiles[selectedIndex], 2);
+					let leftCharacters = availableLetters.indexOf(
+						tiles[selectedIndex],
+						2
+					);
+					let rightCheck = false;
+					let leftCheck = false;
+					if (rightCharacters === 0) rightCheck = true;
+					else {
+						for (let i = 1; i < rightCharacters + 1; i++) {
+							//check right side of availableLetters array
+							if (
+								availableLetters[
+									availableLetters.indexOf(
+										tiles[selectedIndex],
+										2
+									) + i
+								] === tiles[selectedIndex + i * nextTile]
+							) {
+								if (
+									i === rightCharacters ||
+									rightCharacters === 0
+								) {
+									rightCheck = true;
+								}
+								continue;
+							} else break;
+							rightCheck = true;
+						}
+					}
+					if (leftCharacters === 0) leftCheck = true;
 					for (let i = 1; i < leftCharacters + 1; i++) {
 						//check left side of availableLetters array
 						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) -
-									i
-							] === tiles[selectedIndex + i] ||
 							availableLetters[
 								availableLetters.indexOf(
 									tiles[selectedIndex],
 									2
 								) - i
-							] === tiles[selectedIndex + i]
+							] === tiles[selectedIndex + i * prevTile]
 						) {
-							if (i === leftCharacters || leftCharacters === 0) {
+							if (i === leftCharacters) {
 								leftCheck = true;
 							}
 							continue;
 						} else break;
 					}
-				}
-				if (rightCheck && leftCheck) {
-					setIsWin(true);
-					setCurrentScore((prevState) => prevState + 1);
+					if (rightCheck && leftCheck) {
+						checkWin = true;
+						setIsWin(true);
+						setCurrentScore((prevState) => prevState + 1);
+						return;
+					}
 				}
 			}
 		};
-		const checkUpDown = () => {
-			if (isWin === false) {
-				let rightCharacters =
-					availableLetters.length -
-					1 -
-					availableLetters.indexOf(tiles[selectedIndex]);
-				let leftCharacters = availableLetters.indexOf(
-					tiles[selectedIndex]
-				);
-				let rightCheck = false;
-				let leftCheck = false;
-				if (rightCharacters === 0) rightCheck = true;
-				else {
-					for (let i = 1; i < rightCharacters + 1; i++) {
-						//check right side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) +
-									i
-							] === tiles[selectedIndex + i * 8] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) + i
-							] === tiles[selectedIndex + i * 8]
-						) {
-							if (i === rightCharacters) {
-								rightCheck = true;
-							}
-							continue;
-						} else break;
-						rightCheck = true;
-					}
-				}
-				if (leftCharacters === 0) leftCheck = true;
-				else {
-					for (let i = 1; i < leftCharacters + 1; i++) {
-						//check left side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) -
-									i
-							] === tiles[selectedIndex - i * 8] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) - i
-							] === tiles[selectedIndex - i * 8]
-						) {
-							if (i === leftCharacters || leftCharacters === 0) {
-								leftCheck = true;
-							}
-							continue;
-						} else break;
-					}
-				}
-				if (rightCheck && leftCheck) {
-					setIsWin(true);
-					setCurrentScore((prevState) => prevState + 1);
-				}
-			}
-		};
-		const checkDownUp = () => {
-			if (isWin === false) {
-				let rightCharacters =
-					availableLetters.length -
-					1 -
-					availableLetters.indexOf(tiles[selectedIndex]);
-				let leftCharacters = availableLetters.indexOf(
-					tiles[selectedIndex]
-				);
-				let rightCheck = false;
-				let leftCheck = false;
-				if (rightCharacters === 0) rightCheck = true;
-				else {
-					for (let i = 1; i < rightCharacters + 1; i++) {
-						//check right side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) +
-									i
-							] === tiles[selectedIndex - i * 8] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) + i
-							] === tiles[selectedIndex - i * 8]
-						) {
-							if (i === rightCharacters) {
-								rightCheck = true;
-							}
-							continue;
-						} else break;
-						rightCheck = true;
-					}
-				}
-				if (leftCharacters === 0) leftCheck = true;
-				else {
-					for (let i = 1; i < leftCharacters + 1; i++) {
-						//check left side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) -
-									i
-							] === tiles[selectedIndex + i * 8] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) - i
-							] === tiles[selectedIndex + i * 8]
-						) {
-							if (i === leftCharacters || leftCharacters === 0) {
-								leftCheck = true;
-							}
-							continue;
-						} else break;
-					}
-				}
-				if (rightCheck && leftCheck) {
-					setIsWin(true);
-					setCurrentScore((prevState) => prevState + 1);
-				}
-			}
-		};
-		const checkUpRight = () => {
-			if (isWin === false) {
-				let rightCharacters =
-					availableLetters.length -
-					1 -
-					availableLetters.indexOf(tiles[selectedIndex]);
-				let leftCharacters = availableLetters.indexOf(
-					tiles[selectedIndex]
-				);
-				let rightCheck = false;
-				let leftCheck = false;
-				if (rightCharacters === 0) rightCheck = true;
-				else {
-					for (let i = 1; i < rightCharacters + 1; i++) {
-						//check right side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) +
-									i
-							] === tiles[selectedIndex - i * 7] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) + i
-							] === tiles[selectedIndex - i * 7]
-						) {
-							if (i === rightCharacters) {
-								rightCheck = true;
-							}
-							continue;
-						} else break;
-						rightCheck = true;
-					}
-				}
-				if (leftCharacters === 0) leftCheck = true;
-				else {
-					for (let i = 1; i < leftCharacters + 1; i++) {
-						//check left side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) -
-									i
-							] === tiles[selectedIndex + i * 7] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) - i
-							] === tiles[selectedIndex + i * 7]
-						) {
-							if (i === leftCharacters || leftCharacters === 0) {
-								leftCheck = true;
-							}
-							continue;
-						} else break;
-					}
-				}
-				if (rightCheck && leftCheck) {
-					setIsWin(true);
-					setCurrentScore((prevState) => prevState + 1);
-				}
-			}
-		};
-		const checkUpLeft = () => {
-			if (isWin === false) {
-				let rightCharacters =
-					availableLetters.length -
-					1 -
-					availableLetters.indexOf(tiles[selectedIndex]);
-				let leftCharacters = availableLetters.indexOf(
-					tiles[selectedIndex]
-				);
-				let rightCheck = false;
-				let leftCheck = false;
-				if (rightCharacters === 0) rightCheck = true;
-				else {
-					for (let i = 1; i < rightCharacters + 1; i++) {
-						//check right side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) +
-									i
-							] === tiles[selectedIndex - i * 9] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) + i
-							] === tiles[selectedIndex - i * 9]
-						) {
-							if (i === rightCharacters) {
-								rightCheck = true;
-							}
-							continue;
-						} else break;
-						rightCheck = true;
-					}
-				}
-				if (leftCharacters === 0) leftCheck = true;
-				else {
-					for (let i = 1; i < leftCharacters + 1; i++) {
-						//check left side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) -
-									i
-							] === tiles[selectedIndex + i * 9] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) - i
-							] === tiles[selectedIndex + i * 9]
-						) {
-							if (i === leftCharacters || leftCharacters === 0) {
-								leftCheck = true;
-							}
-							continue;
-						} else break;
-					}
-				}
-				if (rightCheck && leftCheck) {
-					setIsWin(true);
-					setCurrentScore((prevState) => prevState + 1);
-				}
-			}
-		};
-		const checkDownLeft = () => {
-			if (isWin === false) {
-				let rightCharacters =
-					availableLetters.length -
-					1 -
-					availableLetters.indexOf(tiles[selectedIndex]);
-				let leftCharacters = availableLetters.indexOf(
-					tiles[selectedIndex]
-				);
-				let rightCheck = false;
-				let leftCheck = false;
-				if (rightCharacters === 0) rightCheck = true;
-				else {
-					for (let i = 1; i < rightCharacters + 1; i++) {
-						//check right side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) +
-									i
-							] === tiles[selectedIndex + i * 7] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) + i
-							] === tiles[selectedIndex + i * 7]
-						) {
-							if (i === rightCharacters) {
-								rightCheck = true;
-							}
-							continue;
-						} else break;
-						rightCheck = true;
-					}
-				}
-				if (leftCharacters === 0) leftCheck = true;
-				else {
-					for (let i = 1; i < leftCharacters + 1; i++) {
-						//check left side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) -
-									i
-							] === tiles[selectedIndex - i * 7] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) - i
-							] === tiles[selectedIndex - i * 7]
-						) {
-							if (i === leftCharacters || leftCharacters === 0) {
-								leftCheck = true;
-							}
-							continue;
-						} else break;
-					}
-				}
-				if (rightCheck && leftCheck) {
-					setIsWin(true);
-					setCurrentScore((prevState) => prevState + 1);
-				}
-			}
-		};
-		const checkDownRight = () => {
-			if (isWin === false) {
-				let rightCharacters =
-					availableLetters.length -
-					1 -
-					availableLetters.indexOf(tiles[selectedIndex]);
-				let leftCharacters = availableLetters.indexOf(
-					tiles[selectedIndex]
-				);
-				let rightCheck = false;
-				let leftCheck = false;
-				if (rightCharacters === 0) rightCheck = true;
-				else {
-					for (let i = 1; i < rightCharacters + 1; i++) {
-						//check right side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) +
-									i
-							] === tiles[selectedIndex + i * 9] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) + i
-							] === tiles[selectedIndex + i * 9]
-						) {
-							if (i === rightCharacters) {
-								rightCheck = true;
-							}
-							continue;
-						} else break;
-						rightCheck = true;
-					}
-				}
-				if (leftCharacters === 0) leftCheck = true;
-				else {
-					for (let i = 1; i < leftCharacters + 1; i++) {
-						//check left side of availableLetters array
-						if (
-							availableLetters[
-								availableLetters.indexOf(tiles[selectedIndex]) -
-									i
-							] === tiles[selectedIndex - i * 9] ||
-							availableLetters[
-								availableLetters.indexOf(
-									tiles[selectedIndex],
-									2
-								) - i
-							] === tiles[selectedIndex - i * 9]
-						) {
-							if (i === leftCharacters || leftCharacters === 0) {
-								leftCheck = true;
-							}
-							continue;
-						} else break;
-					}
-				}
-				if (rightCheck && leftCheck) {
-					setIsWin(true);
-					setCurrentScore((prevState) => prevState + 1);
-				}
-			}
-		};
-		checkLeftRight();
-		checkRightLeft();
-		checkUpDown();
-		checkDownUp();
-		checkUpRight();
-		checkUpLeft();
-		checkDownLeft();
-		checkDownRight();
+		checkDirection(-1, 1); //CHECK LEFT TO RIGHT
+		checkDirection(1, -1); //CHECK RIGHT TO LEFT
+		checkDirection(8, -8); //CHECK BOTTOM TO TOP
+		checkDirection(-8, 8); //CHECK TOP TO BOTTOM
+		checkDirection(7, -7); //CHECK BOTTOMLEFT TO TOPRIGHT
+		checkDirection(9, -9); //CHECK BOTTOMRIGHT TO TOPLEFT
+		checkDirection(-7, 7); //CHECK TOPRIGHT TO BOTTOMLEFT
+		checkDirection(-9, 9); //CHECK TOPLEFT TO BOTTOMRIGHT
+	}, [selectedIndex, tiles, playerColor]);
+	useEffect(() => {
 		//check game status
-		if (isWin) {
+		if (isWin)
 			socket.emit("result", word, playerName, currentScore, socket.id);
-		}
-	}, [selectedIndex, tiles, isWin, playerColor]);
+	}, [isWin]);
 	//Emitting socket.io event after every valid input && pass new Color
 	useEffect(() => {
 		let prevColor;
