@@ -79,9 +79,10 @@ const PlayScreen = () => {
 				socket.emit("timer", "red");
 			}
 		);
-		socket.on("play", (grid, board, color, userList) => {
+		socket.on("play", (grid, board, color, newIndex, userList) => {
 			let checkFilled = true;
 			setTiles(grid);
+			setSelectedIndex(newIndex);
 			setBoardColor({ ...boardColor, ...board });
 			grid.forEach((value: any, key: number) => {
 				if (board[key]) {
@@ -196,6 +197,7 @@ const PlayScreen = () => {
 					setCurrentScore((prevState) => prevState + 1);
 					return;
 				}
+				// If the letter is a duplicate
 				if (availableLetters.indexOf(tiles[selectedIndex], 2) !== -1) {
 					let rightCharacters =
 						availableLetters.length -
@@ -278,7 +280,7 @@ const PlayScreen = () => {
 		} else {
 			prevColor = "red";
 		}
-		socket.emit("play", tiles, boardColor, prevColor);
+		socket.emit("play", tiles, boardColor, selectedIndex, prevColor);
 	}, [turn]);
 	//This function will be invoked whenever a tile is clicked
 	const selectTile = (key: number, divEvent: any) => {

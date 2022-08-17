@@ -63,13 +63,20 @@ io.on("connection", (socket) => {
 			io.to(user.room).emit("leave", user.name, userList);
 		} catch {}
 	});
-	socket.on("play", (tiles, boardColor, playerColor) => {
+	socket.on("play", (tiles, boardColor, selectedIndex, playerColor) => {
 		try {
 			const user = getUser(socket.id);
 			const userList = getUsersInRoom(user.room);
 			socket.broadcast
 				.to(user.room)
-				.emit("play", tiles, boardColor, playerColor, userList);
+				.emit(
+					"play",
+					tiles,
+					boardColor,
+					playerColor,
+					selectedIndex,
+					userList
+				);
 			timerCounter = 15;
 		} catch {}
 	});

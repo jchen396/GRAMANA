@@ -40,19 +40,23 @@ const CreateRoom = () => {
 					</label>
 					<input
 						id="nameInput"
+						title="Please enter a username"
+						autoComplete="off"
 						required
 						onChange={(e) => userTextHandler(e)}
 						className="m-4 text-2xl text-center text-medium uppercase rounded p-2 bg-stone-900 text-stone-50"
 						type="text"
 					/>
 					<label
-						htmlFor="roomInput"
+						htmlFor="codeInput"
 						className="m-2 text-stone-50 text-4xl"
 					>
 						Room Code:
 					</label>
 					<input
-						id="roomInput"
+						id="codeInput"
+						title="Please enter a room code"
+						autoComplete="off"
 						required
 						onChange={(e) => roomTextHandler(e)}
 						className="m-4 text-2xl text-center text-medium uppercase rounded p-2 bg-stone-900 text-stone-50"
@@ -60,10 +64,10 @@ const CreateRoom = () => {
 					/>
 					<button type="submit">
 						<ArrowCircleRightIcon
+							aria-label="Join Room"
 							sx={{ fontSize: 75 }}
 							className="m-2 bg-emerald-600 hover:bg-emerald-400 cursor-pointer rounded-full"
 						/>
-						<span className="hidden">Join</span>
 					</button>
 				</form>
 			</div>
