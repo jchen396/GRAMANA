@@ -31,7 +31,11 @@ const PlayScreen = () => {
 	const [wordOptions, setWordOptions] = useState<string[]>([]);
 	const [currentScore, setCurrentScore] = useState<number>(0);
 	const [isFilled, setIsFilled] = useState<boolean>(false);
+	const [tileInput, setTileInput] = useState<string | null>(null);
 	const refs = useRef<any>([...new Array(64)].map(() => React.createRef()));
+	const tileRefs = useRef<any>(
+		[...new Array(5)].map(() => React.createRef())
+	);
 
 	useEffect(() => {
 		socket.on("reset", (userList, newNextWord, playerObj) => {
@@ -286,8 +290,33 @@ const PlayScreen = () => {
 	//This function will be invoked whenever a tile is clicked
 	const selectTile = (key: number, divEvent: any) => {
 		if (gameStart && playerTurn == socket.id && showResult === false) {
+			// This function will read the tile screen by a click event listener
+			const clickInputTile = (e: any) => {
+				let inputChar = e.target.innerText;
+				setSelectedIndex(key);
+				setTiles([
+					...tiles.slice(0, key),
+					inputChar,
+					...tiles.slice(key + 1, tiles.length),
+				]);
+				setTurn((prev) => prev + 1);
+				setSelectedDiv(null);
+				if (playerColor === "red") {
+					setPlayerColor("blue");
+					setPlayerTurn(playerList[1].id);
+					setBoardColor({ ...boardColor, [key]: "red" });
+				} else {
+					setPlayerColor("red");
+					setPlayerTurn(playerList[0].id);
+					setBoardColor({ ...boardColor, [key]: "blue" });
+				}
+				window.removeEventListener("keypress", pressInputTile);
+				tileRefs.current.forEach((curr: any) =>
+					curr?.current?.removeEventListener("click", clickInputTile)
+				);
+			};
 			// This function will read the keyboard and input character if it is part of the word
-			const inputTile = (keyPressEvent: any) => {
+			const pressInputTile = (keyPressEvent: any) => {
 				let inputChar;
 				if (
 					availableLetters.includes(keyPressEvent.key.toUpperCase())
@@ -311,7 +340,10 @@ const PlayScreen = () => {
 						setBoardColor({ ...boardColor, [key]: "blue" });
 					}
 				}
-				window.removeEventListener("keypress", inputTile);
+				window.removeEventListener("keypress", pressInputTile);
+				tileRefs.current.forEach((curr: any) =>
+					curr?.current?.removeEventListener("click", clickInputTile)
+				);
 			};
 			if (selectedDiv !== null) {
 				if (playerColor == "red") {
@@ -327,7 +359,10 @@ const PlayScreen = () => {
 				divEvent.target.classList.add(`bg-blue-400`);
 			}
 			if (tiles[key] === "") {
-				window.addEventListener("keypress", inputTile);
+				tileRefs.current.forEach((curr: any) =>
+					curr?.current?.addEventListener("click", clickInputTile)
+				);
+				window.addEventListener("keypress", pressInputTile);
 			}
 		}
 	};
@@ -337,6 +372,9 @@ const PlayScreen = () => {
 	};
 	const filledHandler = () => {
 		socket.emit("filled");
+	};
+	const selectLetterHandler = (e: any) => {
+		setTileInput(e.target.InnerHTML);
 	};
 	return (
 		<>
@@ -364,7 +402,7 @@ const PlayScreen = () => {
 					{tiles.map((value, key) => (
 						<div
 							ref={refs.current[key]}
-							className={`text-stone-50 text-4xl font-bold font-mono rounded sm:w-14 sm:h-14 w-10 h-10 border-2 sm:border-4 border-purple-600 hover:border-green-100 flex justify-center items-center `}
+							className={`text-stone-50 text-2xl sm:text-4xl font-bold font-mono rounded sm:w-14 sm:h-14 w-10 h-10 border-2 sm:border-4 border-purple-600 hover:border-green-100 flex justify-center items-center `}
 							onClick={(event) => selectTile(key, event)}
 							key={key}
 						>
@@ -383,7 +421,11 @@ const PlayScreen = () => {
 					/>
 				</div>
 			</div>
-			<TileScreen avaialableLetters={availableLetters} />
+			<TileScreen
+				selectLetterHandler={selectLetterHandler}
+				avaialableLetters={availableLetters}
+				tileRefs={tileRefs}
+			/>
 		</>
 	);
 };
