@@ -3,6 +3,7 @@ import GameHeader from "./GameHeader";
 import Result from "./Result";
 import socket from "./Socket";
 import GameTimer from "./GameTimer";
+import TileScreen from "./TileScreen";
 const PlayScreen = () => {
 	let initialArr: string[] = [];
 
@@ -338,49 +339,52 @@ const PlayScreen = () => {
 		socket.emit("filled");
 	};
 	return (
-		<div className=" relative sm:m-20 m-10 sm:p-10 p-2 w-screen sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-2/4 bg-neutral-800 rounded-2xl place-content-center place-items-center">
-			<div className=" ">
-				<GameHeader
-					socketId={socket.id}
-					playerList={playerList}
-					gameStart={gameStart}
-					word={word}
-				/>
-				<GameTimer
-					gameStart={gameStart}
-					playerTurn={playerTurn}
-					playerColor={playerColor}
-					winner={winner}
-					winnerId={winnerId}
-					playerName={playerName}
-					showResult={showResult}
-					wordOptions={wordOptions}
-				/>
+		<>
+			<div className=" relative sm:m-20 m-4 sm:m-10 sm:p-10 p-2 w-screen sm:w-full md:w-3/4 lg:w-1/2 sm:h-4/5 h-1/2 bg-neutral-800 rounded-2xl place-content-center place-items-center">
+				<div className=" ">
+					<GameHeader
+						socketId={socket.id}
+						playerList={playerList}
+						gameStart={gameStart}
+						word={word}
+					/>
+					<GameTimer
+						gameStart={gameStart}
+						playerTurn={playerTurn}
+						playerColor={playerColor}
+						winner={winner}
+						winnerId={winnerId}
+						playerName={playerName}
+						showResult={showResult}
+						wordOptions={wordOptions}
+					/>
+				</div>
+				<br />
+				<div className="sm:m-10 grid grid-cols-8 sm:gap-y-4">
+					{tiles.map((value, key) => (
+						<div
+							ref={refs.current[key]}
+							className={`text-stone-50 text-4xl font-bold font-mono rounded sm:w-14 sm:h-14 w-10 h-10 border-2 sm:border-4 border-purple-600 hover:border-green-100 flex justify-center items-center `}
+							onClick={(event) => selectTile(key, event)}
+							key={key}
+						>
+							{value}
+						</div>
+					))}
+					<Result
+						playerName={playerName}
+						showResult={showResult}
+						winner={winner}
+						winWord={winWord}
+						wordOptions={wordOptions}
+						resetHandler={resetHandler}
+						isFilled={isFilled}
+						filledHandler={filledHandler}
+					/>
+				</div>
 			</div>
-			<br />
-			<div className="sm:m-10 m-2 grid grid-cols-8 gap-y-4">
-				{tiles.map((value, key) => (
-					<div
-						ref={refs.current[key]}
-						className={`text-stone-50 text-4xl font-bold font-mono rounded sm:w-14 sm:h-14 w-8 h-8 border-4 border-purple-600 hover:border-green-100 flex justify-center items-center `}
-						onClick={(event) => selectTile(key, event)}
-						key={key}
-					>
-						{value}
-					</div>
-				))}
-				<Result
-					playerName={playerName}
-					showResult={showResult}
-					winner={winner}
-					winWord={winWord}
-					wordOptions={wordOptions}
-					resetHandler={resetHandler}
-					isFilled={isFilled}
-					filledHandler={filledHandler}
-				/>
-			</div>
-		</div>
+			<TileScreen avaialableLetters={availableLetters} />
+		</>
 	);
 };
 

@@ -68,10 +68,10 @@ const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 	};
 
 	return (
-		<div className="flex flex-col gap-y-10 w-3/4 lg:w-1/4  sm:h-4/5 h-3/4 ">
+		<div className="m-4 sm:m-10 flex flex-col gap-y-10 w-screen lg:w-1/4  sm:h-4/5 h-3/4 ">
 			<PlayerList userList={userList} userTurn={userTurn} />
 
-			<div className="relative h-4/5 bg-neutral-800 rounded-2xl flex">
+			<div className="relative h-screen sm:h-4/5 bg-neutral-800 rounded-2xl flex">
 				<div className="p-4 m-4 w-full h-5/6 rounded-2xl flex flex-col-reverse justify-start items-start overflow-y-scroll break-all overflow-wrap bg-stone-900">
 					{messageBoxes
 						.slice(0)
@@ -96,13 +96,13 @@ const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 					<input
 						ref={ref}
 						placeholder="Enter a message..."
-						className="p-2 pb-6 rounded-2xl w-3/4 bg-stone-900 text-stone-50"
+						className="m-2 p-2 pb-6 rounded-2xl w-3/4 bg-stone-900 text-stone-50"
 						onChange={(e) => changeMessageHandler(e)}
 					/>
 					<button
 						form="chatInput"
 						type="submit"
-						className="mx-2 p-4 rounded-2xl bg-emerald-600 hover:bg-emerald-400 flex justify-center items-center"
+						className="mx-2 p-3 sm:p-4 rounded-2xl bg-emerald-600 hover:bg-emerald-400 flex justify-center items-center"
 					>
 						Send
 					</button>

@@ -26,7 +26,7 @@ const CreateRoom = () => {
 					GRAMANA
 				</h1>
 			</div>
-			<div className="p-16 bg-neutral-800 rounded-2xl flex flex-col justify-center items-center">
+			<div className="sm:p-16 p-4 bg-neutral-800 rounded-2xl flex flex-col justify-center items-center">
 				<form
 					id="roomInput"
 					onSubmit={(e) => enterRoomHandler(e)}
@@ -34,7 +34,7 @@ const CreateRoom = () => {
 				>
 					<label
 						htmlFor="nameInput"
-						className="m-2 text-stone-50 text-4xl"
+						className="m-2 text-stone-50 text-2xl sm:text-4xl"
 					>
 						Player Name:
 					</label>
@@ -49,7 +49,7 @@ const CreateRoom = () => {
 					/>
 					<label
 						htmlFor="codeInput"
-						className="m-2 text-stone-50 text-4xl"
+						className="m-2 text-stone-50 text-2xl sm:text-4xl "
 					>
 						Room Code:
 					</label>

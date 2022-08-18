@@ -54,8 +54,10 @@ const GameTimer: React.FC<Props> = ({
 	return (
 		<>
 			{gameStart ? (
-				<div className="absolute right-6 top-6 w-16 h-16 border-2 border-stone-400 rounded-full flex justify-center items-center">
-					<h1 className="text-stone-50 text-3xl">{timer}</h1>
+				<div className="absolute right-2 sm:right-6 top-2 sm:top-6  w-10 sm:w-16 h-10 sm:h-16 border-2 border-stone-400 rounded-full flex justify-center items-center">
+					<h1 className="text-stone-50 text-xl sm:text-3xl">
+						{timer}
+					</h1>
 				</div>
 			) : null}
 		</>
