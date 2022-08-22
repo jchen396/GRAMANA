@@ -157,5 +157,5 @@ server.listen(PORT, (err) => {
 });
 
 app.get("/", function (req, res) {
-	res.send("server is running");
+	res.send("Server is running . . .");
 });
