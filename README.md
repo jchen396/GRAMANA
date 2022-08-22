@@ -1,10 +1,12 @@
 # GRAMANA
+
 GRAMANA is a free multiplayer word game on the browser.
 
 ## How to play
+
 Enter a username and create a room to challenge your friends by connecting the letters to build your word and prevent your opponents from completing theirs.
 
-You and your opponent will be given words that are anangrams to each other's. 
+You and your opponent will be given words that are anangrams to each other's.
 This makes it so that the players will be sharing the same letters while building different words.
 The objective is to build your word by inputting letters on the grid on the left side of the play screen.
 The letters can be connected vertically, horizontally, or diagonally in any direction. (similar to Scrabble and Gomoku)
@@ -18,6 +20,28 @@ If the board is filled without a winner, the match will result in a tie, and the
 Keep in mind there is a chat room at the bottom right. Feel free to use it to interact with other users in the room!
 Last, but not least, have fun!
 
+![gameplay-demo](./client/public/images/example.gif)
+
+## Technologies
+
+<div id="badges">
+  <a href="https://nextjs.org/">
+    <img src="https://img.shields.io/badge/NextJS-black?style=for-the-badge&logo=nextjs&logoColor=white" alt="NextJS Badge"/>
+  </a>
+  <a href="https://tailwindcss.com/">
+    <img src="https://img.shields.io/badge/TailwindCSS-white?style=for-the-badge&logo=tailwindcss&logoColor=blue" alt="TailwindCSS Badge"/>
+	</a>
+  <a href="https://socket.io/">
+    <img src="https://img.shields.io/badge/SocketIO-black?style=for-the-badge&logo=socketio&logoColor=white" alt="SocketIO Badge"/>
+    </a>
+  <a href="https://expressjs.com/">
+    <img src="https://img.shields.io/badge/ExpressJS-white?style=for-the-badge&logo=expressjs&logoColor=black" alt="ExpressJS Badge"/>
+</a>
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://img.shields.io/badge/TypeScript-blue?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript Badge"/>
+</a>
+</div>
 
 ## License
+
 [MIT](https://choosealicense.com/licenses/mit/)

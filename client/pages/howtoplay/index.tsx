@@ -7,11 +7,7 @@ const index = () => {
 		<Layout>
 			<div className="w-screen h-screen flex flex-wrap ">
 				<div className="pt-10 bg-neutral-900 w-full flex flex-wrap justify-center items-center space-y-10 sm:space-x-20">
-					<Image
-						src="/images/example.webp"
-						width="400"
-						height="600"
-					/>
+					<Image src="/images/example.gif" width="350" height="600" />
 					<article className="text-stone-50 md:text-2xl text-lg text-center w-3/4 sm:w-1/2">
 						Enter a username and create a room to challenge your
 						friends by connecting the letters to build your word and
