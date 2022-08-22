@@ -28,15 +28,19 @@ Last, but not least, have fun!
   <a href="https://nextjs.org/">
     <img src="https://img.shields.io/badge/NextJS-black?style=for-the-badge&logo=nextjs&logoColor=white" alt="NextJS Badge"/>
   </a>
+  <br/>
   <a href="https://tailwindcss.com/">
     <img src="https://img.shields.io/badge/TailwindCSS-white?style=for-the-badge&logo=tailwindcss&logoColor=blue" alt="TailwindCSS Badge"/>
 	</a>
+  <br/>
   <a href="https://socket.io/">
     <img src="https://img.shields.io/badge/SocketIO-black?style=for-the-badge&logo=socketio&logoColor=white" alt="SocketIO Badge"/>
     </a>
+  <br/>
   <a href="https://expressjs.com/">
     <img src="https://img.shields.io/badge/ExpressJS-white?style=for-the-badge&logo=expressjs&logoColor=black" alt="ExpressJS Badge"/>
 </a>
+  <br/>
   <a href="https://www.typescriptlang.org/">
     <img src="https://img.shields.io/badge/TypeScript-blue?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript Badge"/>
 </a>

@@ -22,7 +22,7 @@ const CreateRoom = () => {
 	return (
 		<div className="flex flex-col justify-center items-center gap-y-10">
 			<div>
-				<h1 className="text-5xl font-mono tracking-widest text-stone-900 p-10 bg-purple-400 rounded-full">
+				<h1 className="cursor-default text-5xl font-mono tracking-widest text-stone-900 p-10 bg-purple-400 rounded-full">
 					GRAMANA
 				</h1>
 			</div>
