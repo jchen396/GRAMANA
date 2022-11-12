@@ -1,5 +1,5 @@
 const users = [];
-const rooms = [];
+const rooms = {};
 
 const addUser = ({ id, name, room, score }) => {
   name = name?.trim().toLowerCase();
@@ -15,14 +15,14 @@ const addUser = ({ id, name, room, score }) => {
   const user = { id, name, room, score };
 
   users.push(user);
-  rooms.push(room);
+  rooms[room] = getUsersInRoom(room);
 
   return { user };
 };
 
-const removeUser = (id) => {
+const removeUser = (id, userRoom) => {
   const index = users.findIndex((user) => user.id === id);
-
+  if (getUsersInRoom(getUser(id)).length === 0) delete rooms[userRoom];
   if (index !== -1) return users.splice(index, 1)[0];
 };
 
