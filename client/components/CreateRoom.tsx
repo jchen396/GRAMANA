@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import { useRouter } from "next/router";
 
 const CreateRoom = () => {
-  const [roomCode, setRoomCode] = useState("");
+  const [roomCode, setRoomCode] = useState<string | string[]>("");
   const [username, setUsername] = useState("");
   const router = useRouter();
+  const roomName: string | string[] = router.query.name!;
+  useEffect(() => {
+    if (roomName) setRoomCode(roomName);
+  }, []);
   const enterRoomHandler = (e: any) => {
     e.preventDefault();
     router.push({
@@ -65,6 +69,7 @@ const CreateRoom = () => {
             autoComplete="off"
             required
             onChange={(e) => roomTextHandler(e)}
+            value={roomName}
             className="m-4 text-2xl text-center text-medium uppercase rounded p-2 bg-stone-900 text-stone-50"
             type="text"
           />
