@@ -31,7 +31,8 @@ const index = () => {
   return (
     <Layout>
       <div className="w-screen h-screen bg-neutral-900 flex flex-col space-y-10 items-center justify-center space-x-20">
-        <h1 className="text-2xl text-slate-100">JOIN ROOM</h1>
+        {" "}
+        <h1 className="text-2xl text-slate-100">JOIN ROOM</h1>{" "}
         <div className="mx-2 w-full sm:w-4/5 h-3/4 bg-neutral-800 rounded-lg flex flex-col items-center justify-center overflow-auto ">
           {Object.keys(gameRoomNames).length ? (
             Object.keys(gameRoomNames).map((name: any, key: number) => {
@@ -39,25 +40,28 @@ const index = () => {
                 <div
                   ref={parent.current[key]}
                   key={key}
-                  className={`my-4 py-4 px-4 w-4/5
-                   bg-neutral-700 rounded-md flex flex-col hover:bg-neutral-600 cursor-pointer transition ease-in-out delay-150
-                   ${showKey[key as keyof typeof showKey] && "h-1/4"}
+                  className={`transition-all ease-in-out delay-150 my-4 py-4 px-4 w-4/5
+                   bg-neutral-700 rounded-md flex flex-col justify-between hover:bg-neutral-600 cursor-pointer ${
+                     showKey[key as keyof typeof showKey] && ""
+                   }
                    `}
                   onClick={() => reveal(key)}
                 >
-                  <div className="flex flex-row justify-between items-center ">
-                    <h1 className="text-purple-400 text-lg ">
+                  <div className="flex flex-row justify-between items-center">
+                    <h1 className="text-purple-400 text-lg">
                       Room: {name.toUpperCase()}
                     </h1>
-                    <p className="text-emerald-400 text-sm ">
+                    <p className="text-emerald-400 text-sm">
                       Players: {gameRoomNames[name].length}
                     </p>
                   </div>
-
                   {showKey[key as keyof typeof showKey] && (
-                    <div>
-                      <p className="text-slate-100 ">test dropdown</p>
-                      <button className="p-2 text-slate-900 font-semibold text-lg bg-emerald-500 rounded-lg">
+                    <div className="w-full flex flex-col items-center justify-between">
+                      <p className="text-slate-100 ">Player</p>
+                      <button
+                        onClick={() => joinRoomHandler(name)}
+                        className="p-2 text-slate-900 font-semibold text-lg bg-emerald-500 rounded-lg"
+                      >
                         Join
                       </button>
                     </div>
