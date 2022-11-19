@@ -30,7 +30,7 @@ const index = () => {
   };
   return (
     <Layout>
-      <div className="w-screen h-screen bg-neutral-900 flex flex-col space-y-10 items-center justify-center space-x-20">
+      <div className="w-screen h-screen bg-neutral-900 flex flex-col space-y-10 items-center justify-center ">
         {" "}
         <h1 className="text-2xl text-slate-100">JOIN ROOM</h1>{" "}
         <div className="mx-2 w-full sm:w-4/5 h-3/4 bg-neutral-800 rounded-lg flex flex-col items-center justify-center overflow-auto ">
@@ -56,8 +56,27 @@ const index = () => {
                     </p>
                   </div>
                   {showKey[key as keyof typeof showKey] && (
-                    <div className="w-full flex flex-col items-center justify-between">
-                      <p className="text-slate-100 ">Player</p>
+                    <div className="w-full flex flex-col items-center justify-between space-y-4">
+                      <div>
+                        {Object.keys(gameRoomNames[name]).map(
+                          (e: string, key: number) => {
+                            return (
+                              <div
+                                key={key}
+                                className="flex flex-row items-center justify-center space-x-4 "
+                              >
+                                <strong className="text-xl text-slate-100">
+                                  {gameRoomNames[name][key].name}
+                                </strong>
+                                <p className="text-lg text-slate-100">
+                                  {gameRoomNames[name][key].score}
+                                </p>
+                              </div>
+                            );
+                          }
+                        )}
+                      </div>
+
                       <button
                         onClick={() => joinRoomHandler(name)}
                         className="p-2 text-slate-900 font-semibold text-lg bg-emerald-500 rounded-lg"
