@@ -37,6 +37,10 @@ const Navbar = () => {
           <a className="text-4xl text-stone-400 hover:text-stone-50">Home</a>
         </Link>
         <br />
+        <Link href="/browse">
+          <a className="text-4xl text-stone-400 hover:text-stone-50">Browse</a>
+        </Link>
+        <br />
         <Link href="/about">
           <a className="text-4xl text-stone-400 hover:text-stone-50">About</a>
         </Link>
