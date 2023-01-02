@@ -1,5 +1,11 @@
 const express = require("express");
-const { addUser, removeUser, getUser, getUsersInRoom } = require("./users");
+const {
+	getRooms,
+	addUser,
+	removeUser,
+	getUser,
+	getUsersInRoom,
+} = require("./users");
 const wordList = require("./anagram-list.json");
 const wordListSearch = require("./anagram-list-search.json");
 const socketIo = require("socket.io");
@@ -58,7 +64,7 @@ io.on("connection", (socket) => {
 	socket.on("disconnect", () => {
 		try {
 			const user = getUser(socket.id);
-			removeUser(socket.id);
+			removeUser(socket.id, user.room);
 			const userList = getUsersInRoom(user.room);
 			io.to(user.room).emit("leave", user.name, userList);
 		} catch {}
@@ -150,6 +156,11 @@ io.on("connection", (socket) => {
 			io.to(user.room).emit("update", userList);
 		}
 	});
+	socket.on("showRooms", () => {
+		const rooms = getRooms();
+		console.log(rooms);
+		io.emit("showRooms", rooms);
+	});
 });
 server.listen(PORT, (err) => {
 	if (err) console.log(err);
@@ -157,5 +168,5 @@ server.listen(PORT, (err) => {
 });
 
 app.get("/", function (req, res) {
-	res.send("Server is now running . . .");
+	res.send("server is running");
 });
