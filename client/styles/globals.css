@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.enter-button{
+    background-image: linear-gradient(#16A34A,#4ADE80);
+    background-size: 0 100%;
+    background-repeat: no-repeat;
+    transition: .4s;
+}
+.enter-button:hover{
+    color: #fff;
+    background-size: 100% 100%;
+}

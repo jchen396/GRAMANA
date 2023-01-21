@@ -36,7 +36,7 @@ const Navbar = () => {
 				}`}
 			>
 				<Link href="/">
-					<a className="text-4xl tkext-stone-400 hover:text-stone-50">
+					<a className="text-4xl text-stone-400 hover:text-stone-50">
 						Home
 					</a>
 				</Link>
