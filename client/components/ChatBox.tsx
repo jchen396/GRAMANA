@@ -68,11 +68,11 @@ const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 	};
 
 	return (
-		<div className="m-4 sm:m-10 flex flex-col gap-y-10 w-screen lg:w-1/4  sm:h-4/5 h-3/4 ">
+		<div className="m-4 sm:m-10 flex flex-col gap-y-10 w-screen lg:w-1/4 sm:h-4/5 h-3/4 ">
 			<PlayerList userList={userList} userTurn={userTurn} />
 
-			<div className="relative h-screen sm:h-4/5 bg-neutral-800 rounded-2xl flex">
-				<div className="p-4 m-4 w-full h-5/6 rounded-2xl flex flex-col-reverse justify-start items-start overflow-y-scroll break-all overflow-wrap bg-stone-900">
+			<div className="relative sm:h-4/5 bg-neutral-800 rounded-2xl flex flex-col justify-between">
+				<div className="p-4 m-4 w-[93%] h-5/6 rounded-2xl flex flex-col-reverse justify-start items-start overflow-y-scroll break-all overflow-wrap bg-stone-900">
 					{messageBoxes
 						.slice(0)
 						.reverse()
@@ -90,7 +90,7 @@ const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 
 				<form
 					id="chatInput"
-					className="absolute mb-4 flex justify-center items-center w-full self-end"
+					className="relative mb-4 flex justify-center items-center w-full self-end"
 					onSubmit={(e) => sendMessage(e)}
 				>
 					<input
@@ -102,7 +102,7 @@ const ChatBox: React.FC<Props> = ({ roomCode, userName }) => {
 					<button
 						form="chatInput"
 						type="submit"
-						className="mx-2 p-3 sm:p-4 rounded-2xl bg-emerald-600 hover:bg-emerald-400 flex justify-center items-center"
+						className="mx-2 p-3 sm:p-4 rounded-2xl bg-emerald-600 hover:bg-emerald-400 flex justify-center items-center enter-button"
 					>
 						Send
 					</button>

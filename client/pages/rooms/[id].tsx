@@ -29,7 +29,7 @@ const Room = () => {
 					/>
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<div className="sm:w-screen sm:h-screen bg-neutral-900 flex flex-wrap items-center justify-center lg:space-x-20">
+				<div className="sm:w-screen lg:h-screen bg-neutral-900 flex flex-wrap items-center justify-center lg:space-x-20">
 					<PlayScreen />
 					<ChatBox roomCode={roomCode} userName={userName} />
 				</div>

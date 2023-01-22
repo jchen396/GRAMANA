@@ -22,7 +22,7 @@ const TileScreen: React.FC<Props> = ({
 						ref={tileRefs.current[key]}
 						key={key}
 						onClick={(e) => selectLetterHandler(e)}
-						className="cursor-default w-14 h-14 rounded bg-emerald-600 hover:bg-emerald-400 flex justify-center items-center space-x-1 text-2xl "
+						className="cursor-default w-14 h-14 rounded-lg bg-emerald-600 hover:bg-emerald-400 flex justify-center items-center space-x-1 text-2xl"
 					>
 						{letter}
 					</div>
