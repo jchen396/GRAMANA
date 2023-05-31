@@ -33,6 +33,7 @@ yarn-error.log*
 /server/.env*.local
 /client/.env*.local
 .env*.local
+/client/.env
 
 # vercel
 .vercel
