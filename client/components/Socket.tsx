@@ -1,6 +1,5 @@
 import io from "socket.io-client";
-require("dotenv").config();
-console.log(process.env.NEXT_PUBLIC_SERVER_DOMAIN)
-const SERVER = process.env.NEXT_PUBLIC_SERVER_DOMAIN;
+//require("dotenv").config();
+const SERVER = "https://gramana-server-9dza.onrender.com";
 const socket = io(SERVER);
 export default socket;
